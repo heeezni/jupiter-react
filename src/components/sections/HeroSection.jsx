@@ -1,0 +1,79 @@
+import React from 'react';
+
+const HeroSection = () => {
+  return (
+    <div className="relative bg-gradient-to-r from-green-50 to-green-100 py-20 lg:py-32">
+      <div className="container mx-auto px-4">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <div className="lg:pr-12">
+            <h1 className="text-4xl lg:text-6xl font-bold text-gray-800 leading-tight mb-6">
+              100% Organic
+              <span className="text-secondary block">Vegetables</span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              Free Pickup and Delivery Available
+            </p>
+            <button className="bg-primary text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-600 transform hover:scale-105 transition-all duration-300 shadow-lg">
+              Shop Now
+            </button>
+          </div>
+
+          {/* Right Content - Hero Image */}
+          <div className="relative">
+            <div className="relative z-10">
+              <img 
+                src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                alt="Fresh Vegetables"
+                className="w-full h-auto max-w-lg mx-auto"
+              />
+            </div>
+            
+            {/* Decorative Elements */}
+            <div className="absolute -top-4 -right-4 w-32 h-32 bg-secondary rounded-full opacity-20"></div>
+            <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-primary rounded-full opacity-30"></div>
+            
+            {/* Floating Cards */}
+            <div className="absolute top-10 -left-10 bg-white p-4 rounded-lg shadow-lg transform rotate-12 hidden lg:block">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                  <i className="fas fa-carrot text-orange-500"></i>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-800">Fresh</h4>
+                  <p className="text-sm text-gray-600">Vegetables</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="absolute bottom-20 -right-8 bg-white p-4 rounded-lg shadow-lg transform -rotate-12 hidden lg:block">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <i className="fas fa-leaf text-green-500"></i>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-800">100%</h4>
+                  <p className="text-sm text-gray-600">Organic</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <svg width="100%" height="100%" viewBox="0 0 100 100">
+          <defs>
+            <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+      </div>
+    </div>
+  );
+};
+
+export default HeroSection;
