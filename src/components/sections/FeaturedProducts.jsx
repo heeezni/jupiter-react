@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const FeaturedProducts = () => {
   const products = [
@@ -66,26 +67,30 @@ const FeaturedProducts = () => {
 
   const ProductCard = ({ product }) => (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
-      <div className="relative overflow-hidden">
-        <img 
-          src={product.image} 
-          alt={product.name}
-          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
-        />
-        <div className="absolute top-3 left-3">
-          <span className="bg-secondary text-white px-2 py-1 rounded-full text-xs font-semibold">
-            {product.category}
-          </span>
+      <Link to={`/product/${product.id}`}>
+        <div className="relative overflow-hidden">
+          <img 
+            src={product.image} 
+            alt={product.name}
+            className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+          />
+          <div className="absolute top-3 left-3">
+            <span className="bg-secondary text-white px-2 py-1 rounded-full text-xs font-semibold">
+              {product.category}
+            </span>
+          </div>
+          <div className="absolute top-3 right-3">
+            <button className="bg-white p-2 rounded-full shadow-md hover:bg-primary hover:text-white transition-colors">
+              <i className="fas fa-heart text-sm"></i>
+            </button>
+          </div>
         </div>
-        <div className="absolute top-3 right-3">
-          <button className="bg-white p-2 rounded-full shadow-md hover:bg-primary hover:text-white transition-colors">
-            <i className="fas fa-heart text-sm"></i>
-          </button>
-        </div>
-      </div>
+      </Link>
       
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h3>
+        <Link to={`/product/${product.id}`}>
+          <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-primary transition-colors">{product.name}</h3>
+        </Link>
         <p className="text-gray-600 text-sm mb-3">{product.description}</p>
         
         <div className="flex items-center mb-3">

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,38 +44,31 @@ const Header = () => {
           <div className="flex justify-between items-center py-4">
             {/* Logo */}
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-primary">
+              <Link to="/" className="text-2xl font-bold text-primary hover:text-green-600 transition-colors">
                 <i className="fas fa-seedling mr-2 text-secondary"></i>
                 Fruitables
-              </h1>
+              </Link>
             </div>
 
             {/* Desktop Menu */}
             <div className="hidden lg:flex items-center space-x-8">
-              <a href="#" className="text-gray-700 hover:text-primary font-medium transition-colors">
-                Home
-              </a>
-              <a href="#" className="text-gray-700 hover:text-primary font-medium transition-colors">
-                Shop
-              </a>
-              <a href="#" className="text-gray-700 hover:text-primary font-medium transition-colors">
-                Shop Detail
-              </a>
+              <Link to="/" className="text-gray-700 hover:text-primary font-medium transition-colors">
+                홈
+              </Link>
+              <Link to="/shop" className="text-gray-700 hover:text-primary font-medium transition-colors">
+                쇼핑
+              </Link>
               <div className="relative group">
-                <a href="#" className="text-gray-700 hover:text-primary font-medium transition-colors flex items-center">
-                  Pages
+                <span className="text-gray-700 hover:text-primary font-medium transition-colors flex items-center cursor-pointer">
+                  페이지
                   <i className="fas fa-chevron-down ml-1 text-xs"></i>
-                </a>
+                </span>
                 <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                  <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">Cart</a>
-                  <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">Checkout</a>
-                  <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">Testimonial</a>
-                  <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">404 Page</a>
+                  <Link to="/cart" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">장바구니</Link>
+                  <Link to="/checkout" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">결제</Link>
+                  <Link to="/about" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">회사소개</Link>
                 </div>
               </div>
-              <a href="#" className="text-gray-700 hover:text-primary font-medium transition-colors">
-                Contact
-              </a>
             </div>
 
             {/* Search and Cart */}
@@ -82,7 +76,7 @@ const Header = () => {
               <div className="relative">
                 <input 
                   type="text" 
-                  placeholder="Search..."
+                  placeholder="검색..."
                   className="hidden lg:block w-64 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-primary"
                 />
                 <button className="lg:absolute lg:right-3 lg:top-1/2 lg:transform lg:-translate-y-1/2 p-2 text-gray-500 hover:text-primary">
@@ -91,12 +85,12 @@ const Header = () => {
               </div>
               
               <div className="relative">
-                <button className="flex items-center space-x-1 p-2 text-gray-700 hover:text-primary">
+                <Link to="/cart" className="flex items-center space-x-1 p-2 text-gray-700 hover:text-primary">
                   <i className="fas fa-shopping-bag text-xl"></i>
                   <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     3
                   </span>
-                </button>
+                </Link>
               </div>
 
               {/* Mobile Menu Button */}
@@ -115,15 +109,15 @@ const Header = () => {
           <div className="lg:hidden bg-white border-t">
             <div className="container mx-auto px-4 py-4">
               <div className="space-y-4">
-                <a href="#" className="block text-gray-700 hover:text-primary font-medium">Home</a>
-                <a href="#" className="block text-gray-700 hover:text-primary font-medium">Shop</a>
-                <a href="#" className="block text-gray-700 hover:text-primary font-medium">Shop Detail</a>
-                <a href="#" className="block text-gray-700 hover:text-primary font-medium">Pages</a>
-                <a href="#" className="block text-gray-700 hover:text-primary font-medium">Contact</a>
+                <Link to="/" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>홈</Link>
+                <Link to="/shop" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>쇼핑</Link>
+                <Link to="/cart" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>장바구니</Link>
+                <Link to="/checkout" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>결제</Link>
+                <Link to="/about" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>회사소개</Link>
                 <div className="pt-4">
                   <input 
                     type="text" 
-                    placeholder="Search..."
+                    placeholder="검색..."
                     className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-primary"
                   />
                 </div>
