@@ -1,46 +1,77 @@
-# Getting Started with Create React App
+# Fruitables - React + Tailwind CSS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+HTML 템플릿을 React + Tailwind CSS로 변환하는 연습 예제입니다.
 
-## Available Scripts
+## 🚀 기술 스택
 
-In the project directory, you can run:
+- **React 19** - 사용자 인터페이스 라이브러리
+- **Tailwind CSS v3** - 유틸리티 기반 CSS 프레임워크
+- **JavaScript (JSX)** - TypeScript 대신 JavaScript 사용
+- **Font Awesome** - 아이콘 라이브러리
+- **Google Fonts** - Open Sans 폰트
+
+## 🎨 주요 기능
+
+- ✅ **완전 반응형 디자인** - 모바일, 태블릿, 데스크톱 지원
+- ✅ **현대적인 UI/UX** - Tailwind CSS로 스타일링
+- ✅ **컴포넌트 기반 아키텍처** - 재사용 가능한 React 컴포넌트
+- ✅ **제품 그리드** - 호버 효과와 애니메이션
+- ✅ **네비게이션** - 드롭다운 메뉴 및 모바일 햄버거 메뉴
+- ✅ **검색 및 장바구니** - 사용자 인터랙션 요소
+
+## 🛠️ 사용 가능한 스크립트
+
+프로젝트 디렉토리에서 다음 명령어를 실행할 수 있습니다:
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+개발 모드에서 앱을 실행합니다.\
+브라우저에서 [http://localhost:3001](http://localhost:3001)을 열어 확인할 수 있습니다.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+코드를 수정하면 페이지가 자동으로 새로고침됩니다.\
+콘솔에서 린트 오류도 확인할 수 있습니다.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+테스트 러너를 대화형 감시 모드로 시작합니다.\
+자세한 내용은 [테스트 실행하기](https://facebook.github.io/create-react-app/docs/running-tests)를 참조하세요.
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+프로덕션용 앱을 `build` 폴더에 빌드합니다.\
+React를 프로덕션 모드로 올바르게 번들링하고 최상의 성능을 위해 빌드를 최적화합니다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+빌드가 압축되고 파일명에 해시가 포함됩니다.\
+앱을 배포할 준비가 완료됩니다!
 
 ### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+**주의: 이는 되돌릴 수 없는 작업입니다. 한 번 `eject`하면 되돌릴 수 없습니다!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+빌드 도구와 설정 선택에 만족하지 않는다면 언제든지 `eject`할 수 있습니다.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## 📁 프로젝트 구조
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+src/
+├── components/
+│   ├── layout/
+│   │   ├── Header.jsx      # 헤더 및 네비게이션
+│   │   └── Footer.jsx      # 푸터 및 뉴스레터
+│   └── sections/
+│       ├── HeroSection.jsx     # 메인 히어로 섹션
+│       └── FeaturedProducts.jsx # 제품 그리드
+├── App.jsx                 # 메인 앱 컴포넌트
+└── index.jsx              # 앱 진입점
+```
 
-## Learn More
+## 🎨 커스텀 컬러 테마
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **Primary**: #81C408 (그린)
+- **Secondary**: #FFB524 (오렌지)
+- **폰트**: Open Sans
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📖 더 알아보기
+
+React에 대해 더 배우려면 [React 공식 문서](https://reactjs.org/)를 확인하세요.\
+Tailwind CSS에 대해서는 [Tailwind CSS 공식 문서](https://tailwindcss.com/)를 참조하세요.
