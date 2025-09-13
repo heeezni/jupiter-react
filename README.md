@@ -1,12 +1,14 @@
-# Fruitables - React + Tailwind CSS
+# Fruitables - React + Vite + Tailwind CSS
 
-HTML 템플릿을 React + Tailwind CSS로 변환하는 연습 예제입니다.
+HTML 템플릿을 React + Vite + Tailwind CSS로 변환하는 연습 예제입니다.
 
 ## 🚀 기술 스택
 
 - **React 19** - 사용자 인터페이스 라이브러리
+- **Vite** - 빠른 빌드 도구 및 개발 서버
 - **Tailwind CSS v3** - 유틸리티 기반 CSS 프레임워크
 - **JavaScript (JSX)** - TypeScript 대신 JavaScript 사용
+- **Vitest** - 빠른 테스트 프레임워크
 - **Font Awesome** - 아이콘 라이브러리
 - **Google Fonts** - Open Sans 폰트
 
@@ -23,32 +25,31 @@ HTML 템플릿을 React + Tailwind CSS로 변환하는 연습 예제입니다.
 
 프로젝트 디렉토리에서 다음 명령어를 실행할 수 있습니다:
 
-### `npm start`
+### `npm run dev`
 
-개발 모드에서 앱을 실행합니다.\
-브라우저에서 [http://localhost:3001](http://localhost:3001)을 열어 확인할 수 있습니다.
+Vite 개발 서버를 시작합니다.\
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인할 수 있습니다.
 
-코드를 수정하면 페이지가 자동으로 새로고침됩니다.\
-콘솔에서 린트 오류도 확인할 수 있습니다.
-
-### `npm test`
-
-테스트 러너를 대화형 감시 모드로 시작합니다.\
-자세한 내용은 [테스트 실행하기](https://facebook.github.io/create-react-app/docs/running-tests)를 참조하세요.
+코드를 수정하면 페이지가 즉시 새로고침됩니다 (HMR - Hot Module Replacement).\
+Create React App보다 훨씬 빠른 개발 서버 시작 속도를 제공합니다.
 
 ### `npm run build`
 
 프로덕션용 앱을 `build` 폴더에 빌드합니다.\
-React를 프로덕션 모드로 올바르게 번들링하고 최상의 성능을 위해 빌드를 최적화합니다.
+TypeScript 타입 체크 후 Vite로 최적화된 빌드를 생성합니다.
 
 빌드가 압축되고 파일명에 해시가 포함됩니다.\
 앱을 배포할 준비가 완료됩니다!
 
-### `npm run eject`
+### `npm run preview`
 
-**주의: 이는 되돌릴 수 없는 작업입니다. 한 번 `eject`하면 되돌릴 수 없습니다!**
+빌드된 앱을 로컬에서 미리보기할 수 있습니다.\
+프로덕션 빌드가 올바르게 작동하는지 확인할 때 유용합니다.
 
-빌드 도구와 설정 선택에 만족하지 않는다면 언제든지 `eject`할 수 있습니다.
+### `npm test`
+
+Vitest로 테스트를 실행합니다.\
+빠르고 현대적인 테스트 러너로 Jest보다 빠른 성능을 제공합니다.
 
 ## 📁 프로젝트 구조
 
@@ -73,5 +74,14 @@ src/
 
 ## 📖 더 알아보기
 
-React에 대해 더 배우려면 [React 공식 문서](https://reactjs.org/)를 확인하세요.\
-Tailwind CSS에 대해서는 [Tailwind CSS 공식 문서](https://tailwindcss.com/)를 참조하세요.
+- **React**: [React 공식 문서](https://reactjs.org/)
+- **Vite**: [Vite 공식 문서](https://vitejs.dev/)
+- **Tailwind CSS**: [Tailwind CSS 공식 문서](https://tailwindcss.com/)
+- **Vitest**: [Vitest 공식 문서](https://vitest.dev/)
+
+## ⚡ Vite의 장점
+
+- **빠른 개발 서버**: 네이티브 ES 모듈 기반으로 즉시 서버 시작
+- **Hot Module Replacement (HMR)**: 코드 변경 시 즉시 반영
+- **최적화된 빌드**: Rollup 기반의 효율적인 프로덕션 빌드
+- **플러그인 생태계**: 풍부한 플러그인으로 확장 가능
