@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import LoginModal from '../auth/LoginModal';
 
@@ -15,7 +15,7 @@ const Header = () => {
             <div className="flex items-center space-x-4">
               <span className="flex items-center">
                 <i className="fas fa-map-marker-alt mr-2"></i>
-                123 Street, New York
+                서울특별시 강남구 테헤란로 123
               </span>
               <span className="flex items-center">
                 <i className="fas fa-envelope mr-2"></i>
@@ -60,15 +60,20 @@ const Header = () => {
               <Link to="/shop" className="text-gray-700 hover:text-primary font-medium transition-colors">
                 가격비교
               </Link>
+              <Link to="/board" className="text-gray-700 hover:text-primary font-medium transition-colors">
+                커뮤니티
+              </Link>
               <div className="relative group">
                 <span className="text-gray-700 hover:text-primary font-medium transition-colors flex items-center cursor-pointer">
-                  카테고리
+                  Pages
                   <i className="fas fa-chevron-down ml-1 text-xs"></i>
                 </span>
                 <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                  <Link to="/shop?category=whisky" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">위스키</Link>
-                  <Link to="/shop?category=cognac" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">코냑</Link>
-                  <Link to="/shop?category=vodka" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">보드카</Link>
+                  <Link to="/" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">홈</Link>
+                  <Link to="/shop" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">상품 목록</Link>
+                  <Link to="/wishlist" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">위시리스트</Link>
+                  <Link to="/board" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">커뮤니티</Link>
+                  <Link to="/community-form" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">글쓰기</Link>
                   <Link to="/about" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">회사소개</Link>
                 </div>
               </div>
@@ -88,7 +93,7 @@ const Header = () => {
               </div>
               
               <div className="relative">
-                <Link to="/favorites" className="flex items-center space-x-1 p-2 text-gray-700 hover:text-primary">
+                <Link to="/wishlist" className="flex items-center space-x-1 p-2 text-gray-700 hover:text-primary">
                   <i className="fas fa-heart text-xl"></i>
                   <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     3
@@ -121,9 +126,9 @@ const Header = () => {
               <div className="space-y-4">
                 <Link to="/" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>홈</Link>
                 <Link to="/shop" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>가격비교</Link>
-                <Link to="/shop?category=whisky" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>위스키</Link>
-                <Link to="/shop?category=cognac" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>코냑</Link>
-                <Link to="/favorites" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>즐겨찾기</Link>
+                <Link to="/board" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>커뮤니티</Link>
+                <Link to="/wishlist" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>위시리스트</Link>
+                <Link to="/community-form" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>글쓰기</Link>
                 <Link to="/about" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>회사소개</Link>
                 <button
                   onClick={() => {

@@ -1,4 +1,4 @@
-# Fruitables - React + Vite + Tailwind CSS
+# Jupiter - React + Vite + Tailwind CSS
 
 HTML 템플릿을 React + Vite + Tailwind CSS로 변환하는 연습 예제입니다.
 
@@ -21,49 +21,73 @@ HTML 템플릿을 React + Vite + Tailwind CSS로 변환하는 연습 예제입�
 - ✅ **네비게이션** - 드롭다운 메뉴 및 모바일 햄버거 메뉴
 - ✅ **검색 및 장바구니** - 사용자 인터랙션 요소
 
-## 🛠️ 사용 가능한 스크립트
+## 🛠️ 시작하기
+
+### 1. 저장소 복제
+
+```bash
+git clone https://github.com/your-username/jupiter-react.git
+cd jupiter-react
+```
+
+### 2. 의존성 설치
+
+프로젝트에 필요한 패키지를 설치합니다.
+
+```bash
+npm install
+```
+
+## ⚙️ 사용 가능한 스크립트
 
 프로젝트 디렉토리에서 다음 명령어를 실행할 수 있습니다:
 
 ### `npm run dev`
 
-Vite 개발 서버를 시작합니다.\
+Vite 개발 서버를 시작합니다.
 브라우저에서 [http://localhost:5173](http://localhost:5173)을 열어 확인할 수 있습니다.
 
-코드를 수정하면 페이지가 즉시 새로고침됩니다 (HMR - Hot Module Replacement).\
+코드를 수정하면 페이지가 즉시 새로고침됩니다 (HMR - Hot Module Replacement).
 Create React App보다 훨씬 빠른 개발 서버 시작 속도를 제공합니다.
 
 ### `npm run build`
 
-프로덕션용 앱을 `build` 폴더에 빌드합니다.\
+프로덕션용 앱을 `build` 폴더에 빌드합니다.
 TypeScript 타입 체크 후 Vite로 최적화된 빌드를 생성합니다.
 
-빌드가 압축되고 파일명에 해시가 포함됩니다.\
+빌드가 압축되고 파일명에 해시가 포함됩니다.
 앱을 배포할 준비가 완료됩니다!
 
 ### `npm run preview`
 
-빌드된 앱을 로컬에서 미리보기할 수 있습니다.\
+빌드된 앱을 로컬에서 미리보기할 수 있습니다.
 프로덕션 빌드가 올바르게 작동하는지 확인할 때 유용합니다.
 
 ### `npm test`
 
-Vitest로 테스트를 실행합니다.\
+Vitest로 테스트를 실행합니다.
 빠르고 현대적인 테스트 러너로 Jest보다 빠른 성능을 제공합니다.
 
 ## 📁 프로젝트 구조
 
 ```
-src/
-├── components/
-│   ├── layout/
-│   │   ├── Header.jsx      # 헤더 및 네비게이션
-│   │   └── Footer.jsx      # 푸터 및 뉴스레터
-│   └── sections/
-│       ├── HeroSection.jsx     # 메인 히어로 섹션
-│       └── FeaturedProducts.jsx # 제품 그리드
-├── App.jsx                 # 메인 앱 컴포넌트
-└── index.jsx              # 앱 진입점
+jupiter-react/
+├── public/              # 정적 에셋 (이미지, 폰트 등)
+├── src/
+│   ├── assets/            # CSS, 이미지 등 리소스
+│   ├── components/        # 재사용 가능한 UI 컴포넌트
+│   │   ├── auth/          # 인증 관련 컴포넌트 (로그인 모달 등)
+│   │   ├── layout/        # 페이지 레이아웃 (헤더, 푸터)
+│   │   └── sections/      # 페이지의 각 섹션
+│   ├── pages/             # 라우팅될 페이지 컴포넌트
+│   ├── App.jsx            # 메인 앱 컴포넌트 (라우터 설정)
+│   ├── index.css          # 전역 CSS 스타일
+│   └── index.jsx          # 애플리케이션 진입점
+├── .gitignore           # Git이 무시할 파일/폴더 목록
+├── index.html           # Vite 앱의 HTML 템플릿
+├── package.json         # 프로젝트 의존성 및 스크립트
+├── tailwind.config.js   # Tailwind CSS 설정
+└── vite.config.ts       # Vite 설정
 ```
 
 ## 🎨 커스텀 컬러 테마
@@ -71,6 +95,11 @@ src/
 - **Primary**: #81C408 (그린)
 - **Secondary**: #FFB524 (오렌지)
 - **폰트**: Open Sans
+
+## 🚀 배포
+
+`npm run build` 명령어를 실행하여 생성된 `dist` 폴더의 내용을 웹 서버에 배포할 수 있습니다.
+Netlify, Vercel, GitHub Pages와 같은 정적 호스팅 서비스를 사용하면 쉽게 배포할 수 있습니다.
 
 ## 📖 더 알아보기
 

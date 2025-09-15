@@ -1,5 +1,4 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 function ProductDetail() {
   const { id } = useParams();
@@ -7,47 +6,131 @@ function ProductDetail() {
   const products = {
     1: {
       id: 1,
-      name: "조니워커 블루라벨",
-      lowestPrice: 189000,
-      category: "위스키",
-      description: "세계 최고급 스카치 위스키의 대명사. 희귀한 몰트와 그레인 위스키를 블렌딩한 프리미엄 제품입니다.",
-      rating: 4.8,
-      reviewCount: 342,
-      image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      name: "참이슬 후레쉬",
+      lowestPrice: 1890,
+      category: "소주",
+      description: "대한민국 대표 소주, 깔끔하고 순한 맛으로 오랜 사랑을 받아온 국민 소주입니다.",
+      rating: 4.3,
+      reviewCount: 1247,
+      image: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
       features: [
-        "40% 알코올 도수",
-        "700ml 용량",
-        "스코틀랜드 원산지",
-        "프리미엄 블렌디드 위스키"
+        "20.1% 알코올 도수",
+        "360ml 용량",
+        "국내산 쌀",
+        "진로 대표 소주"
       ],
       priceHistory: [
-        { store: "쿠팡", price: 189000, shipping: "무료배송", link: "#", discount: "10%" },
-        { store: "11번가", price: 195000, shipping: "무료배송", link: "#", discount: "7%" },
-        { store: "G마켓", price: 210000, shipping: "2,500원", link: "#", discount: "0%" },
-        { store: "신세계몰", price: 205000, shipping: "무료배송", link: "#", discount: "2%" },
-        { store: "롯데온", price: 198000, shipping: "무료배송", link: "#", discount: "6%" }
+        { store: "쿠팡", price: 1890, shipping: "무료배송", link: "#", discount: "5%" },
+        { store: "11번가", price: 1950, shipping: "무료배송", link: "#", discount: "2%" },
+        { store: "G마켓", price: 2100, shipping: "2,500원", link: "#", discount: "0%" },
+        { store: "신세계몰", price: 2050, shipping: "무료배송", link: "#", discount: "0%" },
+        { store: "롯데온", price: 1980, shipping: "무료배송", link: "#", discount: "3%" }
       ]
     },
     2: {
       id: 2,
-      name: "헤네시 XO",
-      lowestPrice: 269000,
-      category: "코냑",
-      description: "프랑스 전통 코냑의 최고봉. 100가지 이상의 오 드 비를 블렌딩한 럭셔리 코냑입니다.",
-      rating: 4.9,
-      reviewCount: 156,
-      image: "https://images.unsplash.com/photo-1504139969750-3244a83e5f8a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      name: "하이트 제로",
+      lowestPrice: 2680,
+      category: "맥주",
+      description: "상쾌하고 깔끔한 맛의 대한민국 대표 맥주로 시원한 목넘김이 일품입니다.",
+      rating: 4.1,
+      reviewCount: 892,
+      image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
       features: [
-        "40% 알코올 도수",
-        "700ml 용량",
-        "프랑스 코냑 지역",
-        "XO 등급 (10년 이상 숙성)"
+        "4.5% 알코올 도수",
+        "500ml 캔",
+        "국내 생산",
+        "라거 맥주"
       ],
       priceHistory: [
-        { store: "신세계몰", price: 269000, shipping: "무료배송", link: "#", discount: "10%" },
-        { store: "롯데온", price: 285000, shipping: "무료배송", link: "#", discount: "5%" },
-        { store: "옥션", price: 299000, shipping: "무료배송", link: "#", discount: "0%" },
-        { store: "G마켓", price: 295000, shipping: "3,000원", link: "#", discount: "1%" }
+        { store: "신세계몰", price: 2680, shipping: "무료배송", link: "#", discount: "8%" },
+        { store: "롯데온", price: 2850, shipping: "무료배송", link: "#", discount: "3%" },
+        { store: "옥션", price: 2990, shipping: "무료배송", link: "#", discount: "0%" },
+        { store: "G마켓", price: 2950, shipping: "3,000원", link: "#", discount: "1%" }
+      ]
+    },
+    3: {
+      id: 3,
+      name: "칠레 산타리타 와인",
+      lowestPrice: 8900,
+      category: "와인",
+      description: "부드럽고 풍부한 맛의 칠레 레드 와인으로 가성비가 뛰어난 데일리 와인입니다.",
+      rating: 4.2,
+      reviewCount: 623,
+      image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      features: [
+        "13.5% 알코올 도수",
+        "750ml 병",
+        "칠레 산",
+        "레드 와인"
+      ],
+      priceHistory: [
+        { store: "와인나라", price: 8900, shipping: "무료배송", link: "#", discount: "12%" },
+        { store: "하이트진로", price: 9800, shipping: "무료배송", link: "#", discount: "7%" },
+        { store: "이마트몰", price: 10500, shipping: "2,500원", link: "#", discount: "3%" }
+      ]
+    },
+    4: {
+      id: 4,
+      name: "처음처럼",
+      lowestPrice: 1790,
+      category: "소주",
+      description: "부드럽고 깔끔한 맛의 프리미엄 소주로 목넘김이 부드러운 것이 특징입니다.",
+      rating: 4.4,
+      reviewCount: 985,
+      image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      features: [
+        "20.1% 알코올 도수",
+        "360ml 용량",
+        "국내산 쌀",
+        "롯데칠성 소주"
+      ],
+      priceHistory: [
+        { store: "11번가", price: 1790, shipping: "무료배송", link: "#", discount: "6%" },
+        { store: "쿠팡", price: 1890, shipping: "무료배송", link: "#", discount: "3%" },
+        { store: "옥션", price: 1950, shipping: "무료배송", link: "#", discount: "0%" }
+      ]
+    },
+    5: {
+      id: 5,
+      name: "카스 맥주",
+      lowestPrice: 2450,
+      category: "맥주",
+      description: "오리온의 대표 맥주, 시원하고 깔끔한 맛으로 많은 사랑을 받고 있습니다.",
+      rating: 4.0,
+      reviewCount: 756,
+      image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      features: [
+        "4.5% 알코올 도수",
+        "500ml 캔",
+        "국내 생산",
+        "라거 맥주"
+      ],
+      priceHistory: [
+        { store: "G마켓", price: 2450, shipping: "무료배송", link: "#", discount: "5%" },
+        { store: "신세계몰", price: 2580, shipping: "무료배송", link: "#", discount: "2%" },
+        { store: "롯데온", price: 2690, shipping: "무료배송", link: "#", discount: "0%" }
+      ]
+    },
+    6: {
+      id: 6,
+      name: "좋은데이 복분자주",
+      lowestPrice: 4900,
+      category: "과실주",
+      description: "달콤하고 부드러운 우리나라 전통 복분자주로 건강에도 좋은 과실주입니다.",
+      rating: 4.5,
+      reviewCount: 432,
+      image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      features: [
+        "15% 알코올 도수",
+        "375ml 병",
+        "국내산 복분자",
+        "과실주"
+      ],
+      priceHistory: [
+        { store: "현대백화점", price: 4900, shipping: "무료배송", link: "#", discount: "10%" },
+        { store: "갤러리아", price: 5200, shipping: "무료배송", link: "#", discount: "5%" },
+        { store: "롯데백화점", price: 5500, shipping: "무료배송", link: "#", discount: "0%" }
       ]
     }
   };
@@ -59,11 +142,11 @@ function ProductDetail() {
       <div className="container mx-auto px-4">
         {/* 브레드크럼 */}
         <div className="flex items-center space-x-2 text-sm text-gray-600 mb-8">
-          <span>홈</span>
+          <Link to="/" className="hover:text-blue-600 hover:underline transition-colors duration-200 cursor-pointer">홈</Link>
           <i className="fas fa-chevron-right"></i>
-          <span>가격비교</span>
+          <Link to="/shop" className="hover:text-blue-600 hover:underline transition-colors duration-200 cursor-pointer">가격비교</Link>
           <i className="fas fa-chevron-right"></i>
-          <span className="text-primary">{product.name}</span>
+          <span className="text-primary font-medium">{product.name}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
@@ -182,6 +265,138 @@ function ProductDetail() {
                 <p className="text-sm text-gray-600">자주 찾는 상품을 즐겨찾기에 추가해보세요.</p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* 리뷰 섹션 */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mt-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold">고객 리뷰</h3>
+          </div>
+
+          {/* 리뷰 통계 */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-gray-800">{product.rating}</div>
+                  <div className="flex items-center justify-center mt-1">
+                    {[...Array(5)].map((_, i) => (
+                      <i
+                        key={i}
+                        className={`fas fa-star text-sm ${
+                          i < Math.floor(product.rating) ? 'text-secondary' : 'text-gray-300'
+                        }`}
+                      ></i>
+                    ))}
+                  </div>
+                  <div className="text-sm text-gray-600 mt-1">{product.reviewCount}개 리뷰</div>
+                </div>
+              </div>
+              <div className="flex-1 ml-8">
+                {[5, 4, 3, 2, 1].map(star => (
+                  <div key={star} className="flex items-center mb-1">
+                    <span className="text-sm text-gray-600 w-6">{star}★</span>
+                    <div className="flex-1 bg-gray-200 rounded-full h-2 mx-2">
+                      <div
+                        className="bg-secondary h-2 rounded-full"
+                        style={{ width: `${star === 5 ? 70 : star === 4 ? 20 : star === 3 ? 5 : star === 2 ? 3 : 2}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-sm text-gray-600 w-8">{star === 5 ? 240 : star === 4 ? 68 : star === 3 ? 17 : star === 2 ? 10 : 7}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 개별 리뷰 */}
+          <div className="space-y-6">
+            {[
+              {
+                id: 1,
+                author: "소주매니아",
+                rating: 5,
+                date: "2024-01-15",
+                title: "역시 안정적인 맛",
+                content: "항상 마시던 참이슬이지만 이번에 처음 온라인으로 주문해봤어요. 가격도 마트보다 저렴하고 배송도 빨라서 만족합니다.",
+                helpful: 12,
+                verified: true
+              },
+              {
+                id: 2,
+                author: "주류애호가",
+                rating: 4,
+                date: "2024-01-10",
+                title: "배송 빠르고 좋아요",
+                content: "언제나 빠른 배송으로 만족합니다. 소주는 역시 참이슬이 최고죠. 깨끗하고 마시기 좋아요.",
+                helpful: 8,
+                verified: true
+              },
+              {
+                id: 3,
+                author: "반주사랑",
+                rating: 5,
+                date: "2024-01-05",
+                title: "회식에 딱 좋아요",
+                content: "가끔 마시는 소주인데 역시 국민 소주답게 맑고 마시기 좋네요. 집에서 반주 한잔 하기에 딱 좋은 소주입니다.",
+                helpful: 15,
+                verified: false
+              }
+            ].map(review => (
+              <div key={review.id} className="border-b border-gray-200 pb-6 last:border-b-0">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                      <i className="fas fa-user text-gray-600"></i>
+                    </div>
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-semibold text-gray-800">{review.author}</span>
+                        {review.verified && (
+                          <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">
+                            구매확인
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <i
+                              key={i}
+                              className={`fas fa-star text-xs ${
+                                i < review.rating ? 'text-secondary' : 'text-gray-300'
+                              }`}
+                            ></i>
+                          ))}
+                        </div>
+                        <span className="text-sm text-gray-500">{review.date}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <h4 className="font-semibold text-gray-800 mb-2">{review.title}</h4>
+                <p className="text-gray-600 leading-relaxed mb-4">{review.content}</p>
+
+                <div className="flex items-center space-x-4 text-sm">
+                  <button className="flex items-center space-x-1 text-gray-500 hover:text-primary">
+                    <i className="fas fa-thumbs-up"></i>
+                    <span>도움됨 ({review.helpful})</span>
+                  </button>
+                  <button className="text-gray-500 hover:text-primary">
+                    신고
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 더 보기 버튼 */}
+          <div className="text-center mt-6">
+            <button className="text-primary hover:text-blue-800 font-semibold">
+              리뷰 더보기 ({product.reviewCount - 3}개 더)
+            </button>
           </div>
         </div>
       </div>

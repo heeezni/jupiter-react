@@ -1,31 +1,23 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function Cart() {
-  const [cartItems, setCartItems] = useState([
+function Wishlist() {
+  const [wishlistItems, setWishlistItems] = useState([
     {
       id: 1,
-      name: '신선한 오렌지',
-      price: 15000,
-      quantity: 2,
-      image: '/images/featur-1.jpg',
-      category: '신선 과일'
+      name: '참이슬 후레쉬',
+      price: 1890,
+      quantity: 1,
+      image: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      category: '소주'
     },
     {
       id: 2,
-      name: '유기농 바나나',
-      price: 12000,
+      name: '하이트 제로',
+      price: 2680,
       quantity: 1,
-      image: '/images/featur-2.jpg',
-      category: '신선 과일'
-    },
-    {
-      id: 3,
-      name: '아보카도',
-      price: 25000,
-      quantity: 3,
-      image: '/images/featur-3.jpg',
-      category: '신선 과일'
+      image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      category: '맥주'
     }
   ]);
 
@@ -34,37 +26,37 @@ function Cart() {
       removeItem(id);
       return;
     }
-    setCartItems(cartItems.map(item => 
+    setWishlistItems(wishlistItems.map(item =>
       item.id === id ? { ...item, quantity: newQuantity } : item
     ));
   };
 
   const removeItem = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+    setWishlistItems(wishlistItems.filter(item => item.id !== id));
   };
 
   const getSubtotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return wishlistItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
   const shipping = 3000;
   const tax = Math.floor(getSubtotal() * 0.1);
   const total = getSubtotal() + shipping + tax;
 
-  if (cartItems.length === 0) {
+  if (wishlistItems.length === 0) {
     return (
       <div className="py-16 bg-gray-50 min-h-screen">
         <div className="container mx-auto px-4 text-center">
           <div className="bg-white rounded-lg shadow-sm p-12">
             <i className="fas fa-shopping-cart text-6xl text-gray-300 mb-6"></i>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">장바구니가 비어있습니다</h2>
-            <p className="text-gray-600 mb-8">쇼핑을 시작해보세요!</p>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">위시리스트가 비어있습니다</h2>
+            <p className="text-gray-600 mb-8">주류 가격비교를 시작해보세요!</p>
             <Link
               to="/shop"
               className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-green-600 transition-colors duration-300 inline-flex items-center"
             >
               <i className="fas fa-shopping-bag mr-2"></i>
-              쇼핑하러 가기
+              가격비교 시작
             </Link>
           </div>
         </div>
@@ -77,27 +69,27 @@ function Cart() {
       {/* 페이지 헤더 */}
       <div className="bg-primary text-white py-16 mb-12">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-4">장바구니</h1>
-          <p className="text-lg">선택한 상품들을 확인하세요</p>
+          <h1 className="text-4xl font-bold mb-4">위시리스트</h1>
+          <p className="text-lg">관심 있는 주류들을 확인하세요</p>
         </div>
       </div>
 
       <div className="container mx-auto px-4">
         {/* 브레드크럼 */}
         <div className="flex items-center space-x-2 text-sm text-gray-600 mb-8">
-          <Link to="/" className="hover:text-primary">홈</Link>
+          <Link to="/" className="hover:text-blue-600 hover:underline transition-colors duration-200 cursor-pointer">홈</Link>
           <i className="fas fa-chevron-right"></i>
-          <span className="text-primary">장바구니</span>
+          <span className="text-primary font-medium">위시리스트</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* 장바구니 아이템 */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-6">장바구니 상품</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-6">위시리스트</h2>
               
               <div className="space-y-4">
-                {cartItems.map(item => (
+                {wishlistItems.map(item => (
                   <div key={item.id} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center space-x-4">
                       <img
@@ -161,12 +153,12 @@ function Cart() {
                   className="text-primary hover:text-green-600 font-semibold flex items-center"
                 >
                   <i className="fas fa-arrow-left mr-2"></i>
-                  쇼핑 계속하기
+                  다른 주류 보기
                 </Link>
                 
                 <button className="text-gray-600 hover:text-gray-800 font-semibold flex items-center">
                   <i className="fas fa-sync-alt mr-2"></i>
-                  장바구니 새로고침
+                  위시리스트 새로고침
                 </button>
               </div>
             </div>
@@ -175,7 +167,7 @@ function Cart() {
           {/* 주문 요약 */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
-              <h2 className="text-xl font-bold text-gray-800 mb-6">주문 요약</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-6">선택된 상품 요약</h2>
               
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
@@ -220,8 +212,8 @@ function Cart() {
                 to="/checkout"
                 className="w-full bg-primary text-white py-3 px-6 rounded-lg hover:bg-green-600 transition-colors duration-300 text-center font-semibold flex items-center justify-center"
               >
-                <i className="fas fa-credit-card mr-2"></i>
-                결제하기
+                <i className="fas fa-shopping-cart mr-2"></i>
+                선택된 상품 가격비교
               </Link>
 
               {/* 보안 배지 */}
@@ -232,22 +224,22 @@ function Cart() {
                 </div>
                 <div className="flex items-center justify-center text-sm text-gray-600 mt-1">
                   <i className="fas fa-truck text-blue-500 mr-2"></i>
-                  <span>30,000원 이상 무료배송</span>
+                  <span>위시리스트 자동 알림</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 추천 상품 섹션 */}
+        {/* 추천 주류 섹션 */}
         <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">이런 상품은 어떠세요?</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">이런 주류는 어떠세요?</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { id: 4, name: '신선한 사과', price: 18000, image: '/images/vegetable-item-1.jpg' },
-              { id: 5, name: '브로콜리', price: 8000, image: '/images/vegetable-item-2.jpg' },
-              { id: 6, name: '양상추', price: 6000, image: '/images/vegetable-item-3.png' },
-              { id: 7, name: '당근', price: 5000, image: '/images/vegetable-item-4.jpg' }
+              { id: 4, name: '처음처럼', price: 1790, image: 'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+              { id: 5, name: '카스 맥주', price: 2450, image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+              { id: 6, name: '칠레 산타리타 와인', price: 8900, image: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+              { id: 7, name: '좋은데이 복분자주', price: 4900, image: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' }
             ].map(product => (
               <div key={product.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300">
                 <img
@@ -259,10 +251,10 @@ function Cart() {
                   <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h3>
                   <div className="flex items-center justify-between">
                     <span className="text-lg font-bold text-primary">
-                      {product.price.toLocaleString()}원
+                      최저가 ₩{product.price.toLocaleString()}
                     </span>
                     <button className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300">
-                      담기
+                      위시리스트 추가
                     </button>
                   </div>
                 </div>
@@ -275,4 +267,4 @@ function Cart() {
   );
 }
 
-export default Cart;
+export default Wishlist;

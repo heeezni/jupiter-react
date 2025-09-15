@@ -1,4 +1,3 @@
-import React from 'react';
 
 const Footer = () => {
   return (
@@ -10,7 +9,7 @@ const Footer = () => {
             {/* Company Info */}
             <div className="lg:col-span-1">
               <div className="flex items-center mb-6">
-                <h3 className="text-2xl font-bold text-primary">
+                <h3 className="text-2xl font-bold">
                   <i className="fas fa-wine-bottle mr-2 text-secondary"></i>
                   Ju(酒)piter
                 </h3>

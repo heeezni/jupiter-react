@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function Shop() {
@@ -6,120 +6,120 @@ function Shop() {
   const [priceRange, setPriceRange] = useState([0, 100]);
   const [sortBy, setSortBy] = useState('기본순');
 
-  const categories = ['전체', '위스키', '코냑', '보드카', '테킬라', '진', '럼'];
+  const categories = ['전체', '소주', '맥주', '와인', '과실주', '전통주'];
 
   const products = [
     {
       id: 1,
-      name: "조니워커 블루라벨",
-      lowestPrice: 189000,
+      name: "참이슬 후레쉬",
+      lowestPrice: 1890,
       prices: [
-        { store: "쿠팡", price: 189000 },
-        { store: "11번가", price: 195000 },
-        { store: "G마켓", price: 210000 }
+        { store: "쿠팡", price: 1890 },
+        { store: "11번가", price: 1950 },
+        { store: "G마켓", price: 2100 }
       ],
-      image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      category: "위스키",
-      rating: 4.8,
-      description: "세계 최고급 스카치 위스키의 대명사"
+      image: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      category: "소주",
+      rating: 4.3,
+      description: "대한민국 대표 소주, 깔끔하고 순한 맛"
     },
     {
       id: 2,
-      name: "헤네시 XO",
-      lowestPrice: 269000,
+      name: "하이트 제로",
+      lowestPrice: 2680,
       prices: [
-        { store: "신세계몰", price: 269000 },
-        { store: "롯데온", price: 285000 },
-        { store: "옥션", price: 299000 }
+        { store: "신세계몰", price: 2680 },
+        { store: "롯데온", price: 2850 },
+        { store: "옥션", price: 2990 }
       ],
-      image: "https://images.unsplash.com/photo-1504139969750-3244a83e5f8a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      category: "코냑",
-      rating: 4.9,
-      description: "프랑스 전통 코냑의 최고봉"
+      image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      category: "맥주",
+      rating: 4.1,
+      description: "상쾌하고 깔끔한 맛의 대한민국 대표 맥주"
     },
     {
       id: 3,
-      name: "돈훌리오 1942",
-      lowestPrice: 450000,
+      name: "칠레 산타리타 와인",
+      lowestPrice: 8900,
       prices: [
-        { store: "와인나라", price: 450000 },
-        { store: "하이트진로", price: 480000 },
-        { store: "이마트몰", price: 520000 }
+        { store: "와인나라", price: 8900 },
+        { store: "하이트진로", price: 9800 },
+        { store: "이마트몰", price: 10500 }
       ],
-      image: "https://images.unsplash.com/photo-1574894709920-11b28e7367e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      category: "테킬라",
-      rating: 4.7,
-      description: "멕시코 최고급 프리미엄 테킬라"
+      image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      category: "와인",
+      rating: 4.2,
+      description: "부드럽고 풍부한 맛의 칠레 레드 와인"
     },
     {
       id: 4,
-      name: "그레이구스 보드카",
-      lowestPrice: 89000,
+      name: "처음처럼",
+      lowestPrice: 1790,
       prices: [
-        { store: "11번가", price: 89000 },
-        { store: "쿠팡", price: 95000 },
-        { store: "옥션", price: 105000 }
+        { store: "11번가", price: 1790 },
+        { store: "쿠팡", price: 1890 },
+        { store: "옥션", price: 1950 }
       ],
-      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      category: "보드카",
-      rating: 4.6,
-      description: "프랑스 최고급 프리미엄 보드카"
+      image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      category: "소주",
+      rating: 4.4,
+      description: "부드럽고 깔끔한 맛의 프리미엄 소주"
     },
     {
       id: 5,
-      name: "발베니 21년",
-      lowestPrice: 350000,
+      name: "카스 맥주",
+      lowestPrice: 2450,
       prices: [
-        { store: "G마켓", price: 350000 },
-        { store: "신세계몰", price: 370000 },
-        { store: "롯데온", price: 390000 }
+        { store: "G마켓", price: 2450 },
+        { store: "신세계몰", price: 2580 },
+        { store: "롯데온", price: 2690 }
       ],
-      image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      category: "위스키",
-      rating: 4.8,
-      description: "스코틀랜드 싱글몰트의 진수"
+      image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      category: "맥주",
+      rating: 4.0,
+      description: "오리온의 대표 맥주, 시원하고 깔끔한 맛"
     },
     {
       id: 6,
-      name: "루이 13세",
-      lowestPrice: 3200000,
+      name: "좋은데이 복분자주",
+      lowestPrice: 4900,
       prices: [
-        { store: "현대백화점", price: 3200000 },
-        { store: "갤러리아", price: 3350000 },
-        { store: "롯데백화점", price: 3500000 }
+        { store: "현대백화점", price: 4900 },
+        { store: "갤러리아", price: 5200 },
+        { store: "롯데백화점", price: 5500 }
       ],
-      image: "https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      category: "코냑",
-      rating: 5.0,
-      description: "세계 최고급 코냑의 황제"
+      image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      category: "과실주",
+      rating: 4.5,
+      description: "달콤하고 부드러운 우리나라 전통 복분자주"
     },
     {
       id: 7,
-      name: "탄커레이 No.10",
-      lowestPrice: 68000,
+      name: "안동소주",
+      lowestPrice: 3500,
       prices: [
-        { store: "쿠팡", price: 68000 },
-        { store: "11번가", price: 72000 },
-        { store: "G마켓", price: 75000 }
+        { store: "쿠팡", price: 3500 },
+        { store: "11번가", price: 3800 },
+        { store: "G마켓", price: 4000 }
       ],
       image: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      category: "진",
-      rating: 4.5,
-      description: "영국 프리미엄 진의 대표작"
+      category: "전통주",
+      rating: 4.6,
+      description: "경상북도 안동의 전통 증류식 소주"
     },
     {
       id: 8,
-      name: "바카디 8년",
-      lowestPrice: 55000,
+      name: "프랑스 보르도 와인",
+      lowestPrice: 15000,
       prices: [
-        { store: "롯데온", price: 55000 },
-        { store: "신세계몰", price: 58000 },
-        { store: "이마트몰", price: 62000 }
+        { store: "롯데온", price: 15000 },
+        { store: "신세계몰", price: 16500 },
+        { store: "이마트몰", price: 18000 }
       ],
-      image: "https://images.unsplash.com/photo-1527281400986-6d0eb64ecdfe?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      category: "럼",
+      image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      category: "와인",
       rating: 4.4,
-      description: "카리브해의 정통 럼"
+      description: "프랑스 보르도 지역의 고품질 레드 와인"
     }
   ];
 
@@ -135,7 +135,7 @@ function Shop() {
       <div className="bg-primary text-white py-16 mb-12">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold mb-4">가격 비교</h1>
-          <p className="text-lg">프리미엄 주류의 최저가를 찾아보세요</p>
+          <p className="text-lg">소주, 맥주, 와인 등 일상 주류의 최저가를 찾아보세요</p>
         </div>
       </div>
 

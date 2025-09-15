@@ -1,8 +1,8 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
   return (
-    <div className="relative bg-gradient-to-r from-slate-900 to-primary py-20 lg:py-32">
+    <div className="relative bg-gradient-to-r from-slate-900 to-primary py-12 lg:py-20">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
@@ -14,17 +14,20 @@ const HeroSection = () => {
             <p className="text-xl text-gray-200 mb-8 leading-relaxed">
               국내 주요 쇼핑몰 가격을 한 번에 비교하세요
             </p>
-            <button className="bg-secondary text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-yellow-600 transform hover:scale-105 transition-all duration-300 shadow-lg">
+            <Link
+              to="/shop"
+              className="bg-secondary text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-yellow-600 transform hover:scale-105 transition-all duration-300 shadow-lg inline-block text-center"
+            >
               가격 비교 시작
-            </button>
+            </Link>
           </div>
 
           {/* Right Content - Hero Image */}
           <div className="relative">
             <div className="relative z-10">
               <img
-                src="https://images.unsplash.com/photo-1569529465841-dfecdab7503b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                alt="Premium Liquor Collection"
+                src="https://images.unsplash.com/photo-1608270586620-248524c67de9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                alt="Beer Collection"
                 className="w-full h-auto max-w-lg mx-auto"
               />
             </div>
@@ -49,11 +52,11 @@ const HeroSection = () => {
             <div className="absolute bottom-20 -right-8 bg-white p-4 rounded-lg shadow-lg transform -rotate-12 hidden lg:block z-20">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <i className="fas fa-medal text-blue-600"></i>
+                  <i className="fas fa-clock text-blue-600"></i>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-800">프리미엄</h4>
-                  <p className="text-sm text-gray-600">품질</p>
+                  <h4 className="font-semibold text-gray-800">실시간</h4>
+                  <p className="text-sm text-gray-600">업데이트</p>
                 </div>
               </div>
             </div>
