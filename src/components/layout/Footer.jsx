@@ -11,12 +11,12 @@ const Footer = () => {
             <div className="lg:col-span-1">
               <div className="flex items-center mb-6">
                 <h3 className="text-2xl font-bold text-primary">
-                  <i className="fas fa-seedling mr-2 text-secondary"></i>
-                  Fruitables
+                  <i className="fas fa-wine-bottle mr-2 text-secondary"></i>
+                  Ju(酒)piter
                 </h3>
               </div>
               <p className="text-gray-300 mb-6 leading-relaxed">
-                Fresh and organic fruits & vegetables for a healthy lifestyle. We deliver the best quality products to your doorstep.
+                국내 주요 쇼핑몰의 주류 가격을 한 번에 비교하여 최저가를 찾아드립니다. 스마트한 쇼핑의 시작, Ju(酒)piter와 함께하세요.
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-secondary transition-colors">
@@ -150,20 +150,20 @@ const Footer = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between">
             <div className="mb-4 lg:mb-0">
               <h4 className="text-white text-lg font-semibold mb-2">
-                Subscribe for the latest updates
+                최저가 알림 구독
               </h4>
               <p className="text-green-100">
-                Get notified about new products and exclusive offers
+                새로운 할인 정보와 최저가 알림을 받아보세요
               </p>
             </div>
             <div className="flex w-full lg:w-auto">
-              <input 
-                type="email" 
-                placeholder="Your email address"
+              <input
+                type="email"
+                placeholder="이메일 주소를 입력하세요"
                 className="flex-1 lg:w-80 px-4 py-3 rounded-l-full focus:outline-none"
               />
               <button className="bg-secondary text-white px-6 py-3 rounded-r-full hover:bg-yellow-500 transition-colors">
-                Subscribe
+                구독하기
               </button>
             </div>
           </div>
@@ -175,7 +175,7 @@ const Footer = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center justify-between">
             <p className="text-gray-400 text-sm mb-2 lg:mb-0">
-              © <span className="text-primary">Fruitables</span>, All rights reserved.
+              © <span className="text-secondary">Ju(酒)piter</span>, All rights reserved.
             </p>
             <div className="flex items-center space-x-6 text-sm">
               <a href="#" className="text-gray-400 hover:text-primary transition-colors">

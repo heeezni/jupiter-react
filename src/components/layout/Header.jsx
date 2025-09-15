@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import LoginModal from '../auth/LoginModal';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   return (
     <div className="relative">
@@ -44,9 +46,9 @@ const Header = () => {
           <div className="flex justify-between items-center py-4">
             {/* Logo */}
             <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-primary hover:text-green-600 transition-colors">
-                <i className="fas fa-seedling mr-2 text-secondary"></i>
-                Fruitables
+              <Link to="/" className="text-2xl font-bold text-primary hover:text-accent transition-colors">
+                <i className="fas fa-wine-bottle mr-2 text-secondary"></i>
+                Ju(酒)piter
               </Link>
             </div>
 
@@ -56,16 +58,17 @@ const Header = () => {
                 홈
               </Link>
               <Link to="/shop" className="text-gray-700 hover:text-primary font-medium transition-colors">
-                쇼핑
+                가격비교
               </Link>
               <div className="relative group">
                 <span className="text-gray-700 hover:text-primary font-medium transition-colors flex items-center cursor-pointer">
-                  페이지
+                  카테고리
                   <i className="fas fa-chevron-down ml-1 text-xs"></i>
                 </span>
                 <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                  <Link to="/cart" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">장바구니</Link>
-                  <Link to="/checkout" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">결제</Link>
+                  <Link to="/shop?category=whisky" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">위스키</Link>
+                  <Link to="/shop?category=cognac" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">코냑</Link>
+                  <Link to="/shop?category=vodka" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">보드카</Link>
                   <Link to="/about" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">회사소개</Link>
                 </div>
               </div>
@@ -85,13 +88,20 @@ const Header = () => {
               </div>
               
               <div className="relative">
-                <Link to="/cart" className="flex items-center space-x-1 p-2 text-gray-700 hover:text-primary">
-                  <i className="fas fa-shopping-bag text-xl"></i>
+                <Link to="/favorites" className="flex items-center space-x-1 p-2 text-gray-700 hover:text-primary">
+                  <i className="fas fa-heart text-xl"></i>
                   <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     3
                   </span>
                 </Link>
               </div>
+
+              <button
+                onClick={() => setIsLoginModalOpen(true)}
+                className="bg-primary text-white px-4 py-2 rounded-full hover:bg-blue-800 transition-colors font-medium"
+              >
+                로그인
+              </button>
 
               {/* Mobile Menu Button */}
               <button 
@@ -110,10 +120,20 @@ const Header = () => {
             <div className="container mx-auto px-4 py-4">
               <div className="space-y-4">
                 <Link to="/" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>홈</Link>
-                <Link to="/shop" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>쇼핑</Link>
-                <Link to="/cart" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>장바구니</Link>
-                <Link to="/checkout" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>결제</Link>
+                <Link to="/shop" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>가격비교</Link>
+                <Link to="/shop?category=whisky" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>위스키</Link>
+                <Link to="/shop?category=cognac" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>코냑</Link>
+                <Link to="/favorites" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>즐겨찾기</Link>
                 <Link to="/about" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>회사소개</Link>
+                <button
+                  onClick={() => {
+                    setIsLoginModalOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors font-medium"
+                >
+                  로그인
+                </button>
                 <div className="pt-4">
                   <input 
                     type="text" 
@@ -126,6 +146,12 @@ const Header = () => {
           </div>
         )}
       </nav>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </div>
   );
 };

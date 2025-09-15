@@ -6,8 +6,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#81C408',
-        secondary: '#FFB524',
+        primary: '#1a365d',
+        secondary: '#d69e2e',
+        accent: '#2d3748',
       },
       fontFamily: {
         'open-sans': ['Open Sans', 'sans-serif'],
