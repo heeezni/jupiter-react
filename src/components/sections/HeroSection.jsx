@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const HeroSection = () => {
   return (
     <div className="relative bg-gradient-to-r from-slate-900 to-primary py-12 lg:py-20">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="lg:pr-12">

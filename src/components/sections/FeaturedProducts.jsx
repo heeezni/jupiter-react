@@ -175,9 +175,12 @@ const FeaturedProducts = () => {
 
         {/* Load More Button */}
         <div className="text-center mt-12">
-          <button className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-800 transition-colors">
+          <Link
+            to="/shop"
+            className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-800 transition-colors inline-block"
+          >
             더 많은 상품 보기
-          </button>
+          </Link>
         </div>
       </div>
     </section>
