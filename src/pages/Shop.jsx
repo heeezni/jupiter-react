@@ -132,8 +132,12 @@ function Shop() {
   return (
     <div className="py-16 bg-gray-50">
       {/* 페이지 헤더 */}
-      <div className="bg-primary text-white py-16 mb-12">
-        <div className="container mx-auto px-4 text-center">
+      <div
+        className="relative py-24 mb-12 bg-cover bg-center"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80')" }}
+      >
+        <div className="absolute inset-0 bg-black opacity-50 backdrop-blur-sm"></div>
+        <div className="relative container mx-auto px-4 text-center text-white">
           <h1 className="text-4xl font-bold mb-4">가격 비교</h1>
           <p className="text-lg">소주, 맥주, 와인 등 일상 주류의 최저가를 찾아보세요</p>
         </div>

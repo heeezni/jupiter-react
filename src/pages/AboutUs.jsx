@@ -9,13 +9,13 @@ function AboutUs() {
     },
     {
       name: '인희진',
-      position: '데이터분석팀장',
+      position: '데이터분석 팀장',
       image: '/images/team-2.png',
       description: '빅데이터 전문가로 정확한 실시간 가격 정보를 제공합니다.'
     },
     {
       name: '손소희',
-      position: '파트너십팀장',
+      position: '파트너십 팀장',
       image: '/images/team-3.png',
       description: '국내외 주류 판매처와의 제휴를 통해 최저가 서비스를 실현합니다.'
     }
@@ -54,8 +54,12 @@ function AboutUs() {
   return (
     <div className="py-16 bg-gray-50">
       {/* 페이지 헤더 */}
-      <div className="bg-primary text-white py-16 mb-16">
-        <div className="container mx-auto px-4 text-center">
+      <div
+        className="relative py-24 mb-12 bg-cover bg-center"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80')" }}
+      >
+        <div className="absolute inset-0 bg-black opacity-50 backdrop-blur-md"></div>
+        <div className="relative container mx-auto px-4 text-center text-white">
           <h1 className="text-4xl font-bold mb-4">회사 소개</h1>
           <p className="text-lg">스마트한 주류 쇼핑의 시작, Ju(酒)piter입니다</p>
         </div>
