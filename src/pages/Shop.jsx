@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import AlcoholPreloader from '../components/AlcoholPreloader';
 
 function Shop() {
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [priceRange, setPriceRange] = useState([0, 100]);
   const [sortBy, setSortBy] = useState('기본순');
+  const [isLoading, setIsLoading] = useState(false);
 
   const categories = ['전체', '소주', '맥주', '와인', '과실주', '전통주'];
 
@@ -129,8 +131,19 @@ function Shop() {
     return categoryMatch && priceMatch;
   });
 
+  useEffect(() => {
+    setIsLoading(true);
+  }, []); // 빈 배열 [] = 컴포넌트가 처음 마운트될 때 한 번만 실행
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+  };
+
   return (
-    <div className="py-16 bg-gray-50">
+    <>
+      <AlcoholPreloader isLoading={isLoading} handleLoadingComplete={handleLoadingComplete} />
+      {/* // prop으로 전달 */}
+      <div className="py-16 bg-gray-50">
       {/* 페이지 헤더 */}
       <div
         className="relative py-24 mb-12 bg-cover bg-center"
@@ -298,6 +311,7 @@ function Shop() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

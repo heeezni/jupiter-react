@@ -1,8 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import PricePredictionChart from '../components/PricePredictionChart';
+import AlcoholPreloader from '../components/AlcoholPreloader';
 
 function ProductDetail() {
   const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
 
   // TODO: 하드코딩된 상품 데이터를 실제 API 또는 데이터베이스에서 가져오도록 수정 필요
   // TODO: 크롤링 시스템과 연동하여 실시간 가격 정보 업데이트 구현 필요
@@ -172,7 +175,17 @@ function ProductDetail() {
 
   const product = products[parseInt(id)] || products[1];
 
+  useEffect(() => {
+    setIsLoading(true);
+  }, [id]);
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+  };
+
   return (
+    <>
+      <AlcoholPreloader isLoading={isLoading} handleLoadingComplete={handleLoadingComplete} />
     <div className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         {/* 브레드크럼 */}
@@ -293,7 +306,7 @@ function ProductDetail() {
             </div>
             <div className="flex items-start space-x-3">
               <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-heart text-blue-600"></i>
+                <i className="fas fa-star text-blue-600"></i>
               </div>
               <div>
                 <h4 className="font-semibold mb-1">즐겨찾기 추가</h4>
@@ -439,6 +452,7 @@ function ProductDetail() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
