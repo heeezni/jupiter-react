@@ -40,7 +40,7 @@ AI 기반 가격 예측 기능을 갖춘 현대적인 쇼핑몰 가격비교 웹
 ### 1. 저장소 복제
 
 ```bash
-git clone https://github.com/your-username/jupiter-react.git
+git clone https://github.com/heeezni/jupiter-react.git
 cd jupiter-react
 ```
 
