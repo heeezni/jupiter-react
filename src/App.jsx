@@ -9,6 +9,8 @@ import Wishlist from './pages/Wishlist';
 import Board from './pages/Board';
 import AboutUs from './pages/AboutUs';
 import CommunityForm from './pages/CommunityForm';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -35,6 +37,8 @@ function App() {
             <Route path="/board" element={<Board />} />
             <Route path="/community-form" element={<CommunityForm />} />
             <Route path="/about" element={<AboutUs />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </main>
         <Footer />

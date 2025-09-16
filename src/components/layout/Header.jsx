@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import LoginModal from '../auth/LoginModal';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   return (
     <div className="relative">
@@ -101,12 +99,12 @@ const Header = () => {
                 </Link>
               </div>
 
-              <button
-                onClick={() => setIsLoginModalOpen(true)}
+              <Link
+                to="/login"
                 className="bg-primary text-white px-4 py-2 rounded-full hover:bg-blue-800 transition-colors font-medium"
               >
                 로그인
-              </button>
+              </Link>
 
               {/* Mobile Menu Button */}
               <button 
@@ -130,15 +128,13 @@ const Header = () => {
                 <Link to="/wishlist" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>위시리스트</Link>
                 <Link to="/community-form" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>글쓰기</Link>
                 <Link to="/about" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>회사소개</Link>
-                <button
-                  onClick={() => {
-                    setIsLoginModalOpen(true);
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors font-medium"
+                <Link
+                  to="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block w-full text-center bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors font-medium"
                 >
                   로그인
-                </button>
+                </Link>
                 <div className="pt-4">
                   <input 
                     type="text" 
@@ -152,11 +148,6 @@ const Header = () => {
         )}
       </nav>
 
-      {/* Login Modal */}
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-      />
     </div>
   );
 };
