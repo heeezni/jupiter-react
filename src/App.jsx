@@ -5,7 +5,7 @@ import Footer from './components/layout/Footer';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
-import Wishlist from './pages/Wishlist';
+import Favorites from './pages/Favorites';
 import Board from './pages/Board';
 import AboutUs from './pages/AboutUs';
 import CommunityForm from './pages/CommunityForm';
@@ -38,7 +38,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/favorites" element={<Favorites />} />
             <Route path="/board" element={<Board />} />
             <Route path="/community-form" element={<CommunityForm />} />
             <Route path="/about" element={<AboutUs />} />

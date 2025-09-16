@@ -89,9 +89,9 @@ const Footer = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/wishlist" className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <Link to="/favorites" className="text-gray-300 hover:text-primary transition-colors flex items-center">
                     <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                    위시리스트
+                    즐겨찾기
                   </Link>
                 </li>
                 <li>

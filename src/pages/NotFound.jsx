@@ -86,8 +86,8 @@ const NotFound = () => {
             <Link to="/board" className="text-xs bg-green-100 text-green-800 px-3 py-1 rounded-full hover:bg-green-200 transition-colors">
               커뮤니티
             </Link>
-            <Link to="/wishlist" className="text-xs bg-purple-100 text-purple-800 px-3 py-1 rounded-full hover:bg-purple-200 transition-colors">
-              위시리스트
+            <Link to="/favorites" className="text-xs bg-purple-100 text-purple-800 px-3 py-1 rounded-full hover:bg-purple-200 transition-colors">
+              즐겨찾기
             </Link>
             <Link to="/about" className="text-xs bg-gray-100 text-gray-800 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors">
               회사소개

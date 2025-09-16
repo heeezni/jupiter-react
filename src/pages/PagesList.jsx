@@ -8,7 +8,7 @@ const PagesList = () => {
         { name: "홈", path: "/", description: "메인 홈페이지" },
         { name: "가격비교", path: "/shop", description: "주류 가격 비교 페이지" },
         { name: "상품 상세", path: "/product/1", description: "상품 상세 정보 페이지" },
-        { name: "위시리스트", path: "/wishlist", description: "찜한 상품 목록" },
+        { name: "즐겨찾기", path: "/favorites", description: "관심 상품 가격 추적" },
         { name: "커뮤니티", path: "/board", description: "게시판 페이지" },
         { name: "글쓰기", path: "/community-form", description: "커뮤니티 글 작성" },
         { name: "회사소개", path: "/about", description: "회사 소개 페이지" }
@@ -118,6 +118,8 @@ const PagesList = () => {
                 <li>• React Router를 활용한 페이지 라우팅</li>
                 <li>• 팝업에서 페이지 형태로 로그인/회원가입 변경</li>
                 <li>• 일반 로그인 + 소셜 로그인 (네이버, 구글, 카카오)</li>
+                <li>• 위시리스트 → 즐겨찾기로 변경 (가격 추적 기능)</li>
+                <li>• 가격 하락 알림 기능 (모바일 푸시 + 이메일)</li>
                 <li>• 이용약관 및 개인정보처리방침 페이지</li>
                 <li>• 404 에러 페이지 및 비밀번호 찾기</li>
                 <li>• Footer 링크 연동</li>

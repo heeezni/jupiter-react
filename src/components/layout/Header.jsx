@@ -77,8 +77,8 @@ const Header = () => {
               </div>
               
               <div className="relative">
-                <Link to="/wishlist" className="flex items-center space-x-1 p-2 text-gray-700 hover:text-primary">
-                  <i className="fas fa-heart text-xl"></i>
+                <Link to="/favorites" className="flex items-center space-x-1 p-2 text-gray-700 hover:text-primary">
+                  <i className="fas fa-star text-xl"></i>
                   <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     3
                   </span>
@@ -111,7 +111,7 @@ const Header = () => {
                 <Link to="/" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>홈</Link>
                 <Link to="/shop" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>가격비교</Link>
                 <Link to="/board" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>커뮤니티</Link>
-                <Link to="/wishlist" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>위시리스트</Link>
+                <Link to="/favorites" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>즐겨찾기</Link>
                 <Link to="/community-form" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>글쓰기</Link>
                 <Link to="/about" className="block text-gray-700 hover:text-primary font-medium" onClick={() => setIsMenuOpen(false)}>회사소개</Link>
                 <Link
