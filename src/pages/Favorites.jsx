@@ -284,15 +284,14 @@ function Favorites() {
 
               {/* 즐겨찾기 관리 */}
               <div className="space-y-3">
-                <button className="w-full bg-primary text-white py-3 px-6 rounded-lg hover:bg-blue-800 transition-colors font-semibold flex items-center justify-center">
+                <Link
+                  to="/notification-settings"
+                  className="w-full bg-primary text-white py-3 px-6 rounded-lg hover:bg-blue-800 transition-colors font-semibold flex items-center justify-center"
+                >
                   <i className="fas fa-cog mr-2"></i>
                   알림 설정 관리
-                </button>
+                </Link>
 
-                <button className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors font-semibold flex items-center justify-center">
-                  <i className="fas fa-share-alt mr-2"></i>
-                  즐겨찾기 공유
-                </button>
               </div>
 
               {/* 도움말 */}
