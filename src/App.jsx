@@ -11,6 +11,10 @@ import AboutUs from './pages/AboutUs';
 import CommunityForm from './pages/CommunityForm';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import ForgotPassword from './pages/ForgotPassword';
+import NotFound from './pages/NotFound';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -39,6 +43,11 @@ function App() {
             <Route path="/about" element={<AboutUs />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/pages" element={<PagesList />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />

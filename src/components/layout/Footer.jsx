@@ -1,4 +1,6 @@
 
+import { Link } from 'react-router-dom';
+
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white">
@@ -35,106 +37,100 @@ const Footer = () => {
 
             {/* Quick Links */}
             <div>
-              <h4 className="text-lg font-semibold mb-6">Quick Links</h4>
+              <h4 className="text-lg font-semibold mb-6">빠른 링크</h4>
               <ul className="space-y-3">
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <Link to="/about" className="text-gray-300 hover:text-primary transition-colors flex items-center">
                     <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                    About Us
-                  </a>
+                    회사소개
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <Link to="/shop" className="text-gray-300 hover:text-primary transition-colors flex items-center">
                     <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                    Contact Us
-                  </a>
+                    가격비교
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <Link to="/board" className="text-gray-300 hover:text-primary transition-colors flex items-center">
                     <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                    Our Services
-                  </a>
+                    커뮤니티
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <Link to="/terms" className="text-gray-300 hover:text-primary transition-colors flex items-center">
                     <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                    Terms & Condition
-                  </a>
+                    이용약관
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <Link to="/privacy" className="text-gray-300 hover:text-primary transition-colors flex items-center">
                     <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                    Return Policy
-                  </a>
+                    개인정보처리방침
+                  </Link>
                 </li>
               </ul>
             </div>
 
             {/* Account */}
             <div>
-              <h4 className="text-lg font-semibold mb-6">Account</h4>
+              <h4 className="text-lg font-semibold mb-6">계정</h4>
               <ul className="space-y-3">
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <Link to="/login" className="text-gray-300 hover:text-primary transition-colors flex items-center">
                     <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                    My Account
-                  </a>
+                    로그인
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <Link to="/register" className="text-gray-300 hover:text-primary transition-colors flex items-center">
                     <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                    Shop Details
-                  </a>
+                    회원가입
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <Link to="/wishlist" className="text-gray-300 hover:text-primary transition-colors flex items-center">
                     <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                    Shopping Cart
-                  </a>
+                    위시리스트
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <Link to="/forgot-password" className="text-gray-300 hover:text-primary transition-colors flex items-center">
                     <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                    Wishlist
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-300 hover:text-primary transition-colors flex items-center">
-                    <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                    Order History
-                  </a>
+                    비밀번호 찾기
+                  </Link>
                 </li>
               </ul>
             </div>
 
             {/* Contact */}
             <div>
-              <h4 className="text-lg font-semibold mb-6">Contact</h4>
+              <h4 className="text-lg font-semibold mb-6">연락처</h4>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
                   <i className="fas fa-map-marker-alt text-primary mt-1"></i>
                   <div>
                     <p className="text-gray-300">
-                      123 Street, New York, USA
+                      서울특별시 강남구 테헤란로 123
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
                   <i className="fas fa-envelope text-primary"></i>
-                  <a href="mailto:Email@Example.com" className="text-gray-300 hover:text-primary transition-colors">
-                    Email@Example.com
+                  <a href="mailto:support@jupiter.com" className="text-gray-300 hover:text-primary transition-colors">
+                    support@jupiter.com
                   </a>
                 </div>
                 <div className="flex items-center space-x-3">
                   <i className="fas fa-phone text-primary"></i>
-                  <a href="tel:+01234567890" className="text-gray-300 hover:text-primary transition-colors">
-                    +012 345 67890
+                  <a href="tel:+821234567890" className="text-gray-300 hover:text-primary transition-colors">
+                    02-1234-5678
                   </a>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <i className="fas fa-print text-primary"></i>
+                  <i className="fas fa-clock text-primary"></i>
                   <span className="text-gray-300">
-                    +012 345 67890
+                    평일 09:00 - 18:00
                   </span>
                 </div>
               </div>
@@ -177,14 +173,14 @@ const Footer = () => {
               © <span className="text-secondary">Ju(酒)piter</span>, All rights reserved.
             </p>
             <div className="flex items-center space-x-6 text-sm">
-              <a href="#" className="text-gray-400 hover:text-primary transition-colors">
-                Privacy Policy
-              </a>
-              <a href="#" className="text-gray-400 hover:text-primary transition-colors">
-                Terms of Use
-              </a>
-              <a href="#" className="text-gray-400 hover:text-primary transition-colors">
-                Sales and Refunds
+              <Link to="/privacy" className="text-gray-400 hover:text-primary transition-colors">
+                개인정보처리방침
+              </Link>
+              <Link to="/terms" className="text-gray-400 hover:text-primary transition-colors">
+                이용약관
+              </Link>
+              <a href="mailto:support@jupiter.com" className="text-gray-400 hover:text-primary transition-colors">
+                고객센터
               </a>
             </div>
           </div>

@@ -310,7 +310,7 @@ const Register = () => {
                   className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                 />
                 <label htmlFor="agreeTerms" className="ml-2 block text-sm text-gray-900">
-                  <span className="text-red-500">*</span> <a href="#" className="text-primary hover:underline">이용약관</a>에 동의합니다
+                  <span className="text-red-500">*</span> <Link to="/terms" className="text-primary hover:underline">이용약관</Link>에 동의합니다
                 </label>
               </div>
               {errors.agreeTerms && <p className="text-sm text-red-600">{errors.agreeTerms}</p>}
@@ -325,7 +325,7 @@ const Register = () => {
                   className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                 />
                 <label htmlFor="agreePrivacy" className="ml-2 block text-sm text-gray-900">
-                  <span className="text-red-500">*</span> <a href="#" className="text-primary hover:underline">개인정보처리방침</a>에 동의합니다
+                  <span className="text-red-500">*</span> <Link to="/privacy" className="text-primary hover:underline">개인정보처리방침</Link>에 동의합니다
                 </label>
               </div>
               {errors.agreePrivacy && <p className="text-sm text-red-600">{errors.agreePrivacy}</p>}

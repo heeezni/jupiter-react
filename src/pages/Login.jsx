@@ -203,8 +203,8 @@ const Login = () => {
 
           {/* 이용약관 */}
           <div className="mt-6 text-center text-sm text-gray-500">
-            로그인 시 <a href="#" className="text-primary hover:underline">이용약관</a> 및{' '}
-            <a href="#" className="text-primary hover:underline">개인정보처리방침</a>에 동의합니다.
+            로그인 시 <Link to="/terms" className="text-primary hover:underline">이용약관</Link> 및{' '}
+            <Link to="/privacy" className="text-primary hover:underline">개인정보처리방침</Link>에 동의합니다.
           </div>
         </div>
       </div>
