@@ -15,6 +15,7 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import ForgotPassword from './pages/ForgotPassword';
 import NotFound from './pages/NotFound';
+import PagesList from './pages/PagesList';
 
 function ScrollToTop() {
   const { pathname } = useLocation();

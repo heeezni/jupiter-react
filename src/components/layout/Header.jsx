@@ -61,20 +61,6 @@ const Header = () => {
               <Link to="/board" className="text-gray-700 hover:text-primary font-medium transition-colors">
                 커뮤니티
               </Link>
-              <div className="relative group">
-                <span className="text-gray-700 hover:text-primary font-medium transition-colors flex items-center cursor-pointer">
-                  Pages
-                  <i className="fas fa-chevron-down ml-1 text-xs"></i>
-                </span>
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                  <Link to="/" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">홈</Link>
-                  <Link to="/shop" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">상품 목록</Link>
-                  <Link to="/wishlist" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">위시리스트</Link>
-                  <Link to="/board" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">커뮤니티</Link>
-                  <Link to="/community-form" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">글쓰기</Link>
-                  <Link to="/about" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary">회사소개</Link>
-                </div>
-              </div>
             </div>
 
             {/* Search and Cart */}
