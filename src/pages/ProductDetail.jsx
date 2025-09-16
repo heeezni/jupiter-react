@@ -1,8 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
+import PricePredictionChart from '../components/PricePredictionChart';
 
 function ProductDetail() {
   const { id } = useParams();
 
+  // TODO: 하드코딩된 상품 데이터를 실제 API 또는 데이터베이스에서 가져오도록 수정 필요
+  // TODO: 크롤링 시스템과 연동하여 실시간 가격 정보 업데이트 구현 필요
   const products = {
     1: {
       id: 1,
@@ -19,12 +22,19 @@ function ProductDetail() {
         "국내산 쌀",
         "진로 대표 소주"
       ],
-      priceHistory: [
+      // TODO: 실제 크롤링 데이터로 교체 필요 - 각 쇼핑몰의 실시간 가격 정보
+      priceComparison: [
         { store: "쿠팡", price: 1890, shipping: "무료배송", link: "#", discount: "5%" },
         { store: "11번가", price: 1950, shipping: "무료배송", link: "#", discount: "2%" },
         { store: "G마켓", price: 2100, shipping: "2,500원", link: "#", discount: "0%" },
         { store: "신세계몰", price: 2050, shipping: "무료배송", link: "#", discount: "0%" },
         { store: "롯데온", price: 1980, shipping: "무료배송", link: "#", discount: "3%" }
+      ],
+      // TODO: 실제 가격 히스토리 데이터로 교체 필요 - 시계열 최저가 데이터
+      priceHistory: [
+        { date: "2025-08-26", price: 1820, weeksAgo: 3 },
+        { date: "2025-09-02", price: 1850, weeksAgo: 2 },
+        { date: "2025-09-09", price: 1890, weeksAgo: 1 }
       ]
     },
     2: {
@@ -42,11 +52,16 @@ function ProductDetail() {
         "국내 생산",
         "라거 맥주"
       ],
-      priceHistory: [
+      priceComparison: [
         { store: "신세계몰", price: 2680, shipping: "무료배송", link: "#", discount: "8%" },
         { store: "롯데온", price: 2850, shipping: "무료배송", link: "#", discount: "3%" },
         { store: "옥션", price: 2990, shipping: "무료배송", link: "#", discount: "0%" },
         { store: "G마켓", price: 2950, shipping: "3,000원", link: "#", discount: "1%" }
+      ],
+      priceHistory: [
+        { date: "2025-08-26", price: 2580, weeksAgo: 3 },
+        { date: "2025-09-02", price: 2630, weeksAgo: 2 },
+        { date: "2025-09-09", price: 2680, weeksAgo: 1 }
       ]
     },
     3: {
@@ -64,10 +79,15 @@ function ProductDetail() {
         "칠레 산",
         "레드 와인"
       ],
-      priceHistory: [
+      priceComparison: [
         { store: "와인나라", price: 8900, shipping: "무료배송", link: "#", discount: "12%" },
         { store: "하이트진로", price: 9800, shipping: "무료배송", link: "#", discount: "7%" },
         { store: "이마트몰", price: 10500, shipping: "2,500원", link: "#", discount: "3%" }
+      ],
+      priceHistory: [
+        { date: "2025-08-26", price: 8500, weeksAgo: 3 },
+        { date: "2025-09-02", price: 8700, weeksAgo: 2 },
+        { date: "2025-09-09", price: 8900, weeksAgo: 1 }
       ]
     },
     4: {
@@ -85,10 +105,15 @@ function ProductDetail() {
         "국내산 쌀",
         "롯데칠성 소주"
       ],
-      priceHistory: [
+      priceComparison: [
         { store: "11번가", price: 1790, shipping: "무료배송", link: "#", discount: "6%" },
         { store: "쿠팡", price: 1890, shipping: "무료배송", link: "#", discount: "3%" },
         { store: "옥션", price: 1950, shipping: "무료배송", link: "#", discount: "0%" }
+      ],
+      priceHistory: [
+        { date: "2025-08-26", price: 1720, weeksAgo: 3 },
+        { date: "2025-09-02", price: 1750, weeksAgo: 2 },
+        { date: "2025-09-09", price: 1790, weeksAgo: 1 }
       ]
     },
     5: {
@@ -106,10 +131,15 @@ function ProductDetail() {
         "국내 생산",
         "라거 맥주"
       ],
-      priceHistory: [
+      priceComparison: [
         { store: "G마켓", price: 2450, shipping: "무료배송", link: "#", discount: "5%" },
         { store: "신세계몰", price: 2580, shipping: "무료배송", link: "#", discount: "2%" },
         { store: "롯데온", price: 2690, shipping: "무료배송", link: "#", discount: "0%" }
+      ],
+      priceHistory: [
+        { date: "2025-08-26", price: 2350, weeksAgo: 3 },
+        { date: "2025-09-02", price: 2400, weeksAgo: 2 },
+        { date: "2025-09-09", price: 2450, weeksAgo: 1 }
       ]
     },
     6: {
@@ -127,10 +157,15 @@ function ProductDetail() {
         "국내산 복분자",
         "과실주"
       ],
-      priceHistory: [
+      priceComparison: [
         { store: "현대백화점", price: 4900, shipping: "무료배송", link: "#", discount: "10%" },
         { store: "갤러리아", price: 5200, shipping: "무료배송", link: "#", discount: "5%" },
         { store: "롯데백화점", price: 5500, shipping: "무료배송", link: "#", discount: "0%" }
+      ],
+      priceHistory: [
+        { date: "2025-08-26", price: 4700, weeksAgo: 3 },
+        { date: "2025-09-02", price: 4800, weeksAgo: 2 },
+        { date: "2025-09-09", price: 4900, weeksAgo: 1 }
       ]
     }
   };
@@ -191,7 +226,7 @@ function ProductDetail() {
 
               <div className="p-6">
                 <div className="space-y-4">
-                  {product.priceHistory.map((store, index) => (
+                  {product.priceComparison.map((store, index) => (
                     <div key={index} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
@@ -267,6 +302,9 @@ function ProductDetail() {
             </div>
           </div>
         </div>
+
+        {/* 가격 예측 차트 */}
+        <PricePredictionChart product={product} />
 
         {/* 리뷰 섹션 */}
         <div className="bg-white rounded-lg shadow-sm p-6 mt-8">
