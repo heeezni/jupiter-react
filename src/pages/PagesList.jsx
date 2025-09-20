@@ -14,6 +14,9 @@ const PagesList = () => {
         { name: "글쓰기", path: "/post-form", description: "커뮤니티 글 작성" },
         { name: "게시글 상세", path: "/post/1", description: "게시글 상세보기 및 댓글" },
         { name: "게시글 수정", path: "/post/edit/1", description: "게시글 수정 페이지" },
+        { name: "마이페이지", path: "/mypage", description: "사용자 개인 설정 페이지" },
+        { name: "설정", path: "/settings", description: "개인 설정 관리" },
+        { name: "도움말", path: "/help", description: "사용자 가이드 및 FAQ" },
         { name: "회사소개", path: "/about", description: "회사 소개 페이지" }
       ]
     },
@@ -23,6 +26,15 @@ const PagesList = () => {
         { name: "로그인", path: "/login", description: "로그인 페이지 (일반 + 소셜)" },
         { name: "회원가입", path: "/register", description: "회원가입 페이지 (일반 + 소셜)" },
         { name: "비밀번호 찾기", path: "/forgot-password", description: "비밀번호 재설정" }
+      ]
+    },
+    {
+      category: "관리자 페이지",
+      items: [
+        { name: "관리자 패널", path: "/admin", description: "전체 관리자 대시보드" },
+        { name: "사용자 관리", path: "/admin/users", description: "회원 관리 및 권한 설정" },
+        { name: "상품 관리", path: "/admin/products", description: "상품 등록/수정/삭제" },
+        { name: "알림 관리", path: "/admin/notifications", description: "시스템 알림 관리" }
       ]
     },
     {
@@ -74,6 +86,7 @@ const PagesList = () => {
                 <h2 className="text-xl font-semibold flex items-center">
                   {category.category === "메인 페이지" && <i className="fas fa-home mr-3"></i>}
                   {category.category === "인증 페이지" && <i className="fas fa-user-shield mr-3"></i>}
+                  {category.category === "관리자 페이지" && <i className="fas fa-cog mr-3"></i>}
                   {category.category === "약관/정책 페이지" && <i className="fas fa-file-contract mr-3"></i>}
                   {category.category === "에러 페이지" && <i className="fas fa-exclamation-triangle mr-3"></i>}
                   {category.category}
@@ -118,31 +131,31 @@ const PagesList = () => {
             <div>
               <h4 className="font-semibold text-blue-800 mb-2">구현된 기능</h4>
               <ul className="space-y-1 text-blue-700">
+                <li>• jupiter/frontend 프로토타입 코드 이전 완료</li>
+                <li>• 18개 페이지 컴포넌트 (홈, 쇼핑, 커뮤니티, 관리자 등)</li>
                 <li>• React Router를 활용한 페이지 라우팅</li>
-                <li>• 팝업에서 페이지 형태로 로그인/회원가입 변경</li>
-                <li>• 일반 로그인 + 소셜 로그인 (네이버, 구글, 카카오)</li>
-                <li>• 위시리스트 → 즐겨찾기로 변경 (가격 추적 기능)</li>
-                <li>• 가격 하락 알림 기능 (모바일 푸시 + 이메일)</li>
-                <li>• 알림 설정 관리 페이지 (연락처, 시간대, 조건 설정)</li>
-                <li>• 가격 새로고침 버튼 로딩 애니메이션</li>
-                <li>• 이용약관 및 개인정보처리방침 페이지</li>
-                <li>• 404 에러 페이지 및 비밀번호 찾기</li>
-                <li>• Footer 링크 연동</li>
-                <li>• 커뮤니티 게시판 (CRUD 기능)</li>
-                <li>• 게시글 상세보기 및 댓글 시스템</li>
-                <li>• 익명/회원 통합 작성자 관리</li>
-                <li>• 게시글 수정/삭제 권한 관리</li>
+                <li>• API 서비스 레이어 구조 (5개 서비스 모듈)</li>
+                <li>• 컴포넌트 기반 아키텍처 (layout, sections 포함)</li>
+                <li>• 커스텀 훅 (useFileUpload)</li>
+                <li>• 유틸리티 함수 (카테고리, 파일 처리)</li>
+                <li>• 가격 예측 차트 컴포넌트</li>
                 <li>• 술병 회전 로딩 애니메이션</li>
+                <li>• 관리자 패널 (사용자, 상품, 알림 관리)</li>
+                <li>• 커뮤니티 게시판 시스템</li>
+                <li>• 완전 반응형 디자인</li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold text-blue-800 mb-2">기술 스택</h4>
               <ul className="space-y-1 text-blue-700">
-                <li>• React 18</li>
+                <li>• React 19</li>
+                <li>• Vite (빌드 도구)</li>
                 <li>• React Router Dom</li>
+                <li>• @tanstack/react-query</li>
                 <li>• Tailwind CSS</li>
+                <li>• Chart.js & React Chart.js 2</li>
                 <li>• Font Awesome Icons</li>
-                <li>• Responsive Design</li>
+                <li>• Vitest (테스트)</li>
               </ul>
             </div>
           </div>

@@ -1,6 +1,7 @@
 # 🛒 Jupiter - 스마트 가격비교 플랫폼
 
-AI 기반 가격 예측 기능을 갖춘 현대적인 쇼핑몰 가격비교 웹 애플리케이션입니다.
+jupiter/frontend 프로토타입을 기반으로 제작된 React 웹 애플리케이션입니다.
+AI 기반 가격 예측 기능을 갖춘 현대적인 쇼핑몰 가격비교 플랫폼을 목표로 합니다.
 
 ## 🚀 기술 스택
 
@@ -8,11 +9,12 @@ AI 기반 가격 예측 기능을 갖춘 현대적인 쇼핑몰 가격비교 웹
 - **React 19** - 사용자 인터페이스 라이브러리
 - **Vite** - 빠른 빌드 도구 및 개발 서버
 - **Tailwind CSS v3** - 유틸리티 기반 CSS 프레임워크
+- **@tanstack/react-query** - 서버 상태 관리
 - **Chart.js** - AI 가격 예측 차트 시각화
 - **React Chart.js 2** - React용 Chart.js 래퍼
 - **React Router Dom** - 클라이언트 사이드 라우팅
-- **Vitest** - 빠른 테스트 프레임워크
 - **Font Awesome** - 아이콘 라이브러리
+- **Vitest** - 빠른 테스트 프레임워크
 
 ### Backend (연동)
 - **Spring Boot** - RESTful API 서버
@@ -93,7 +95,7 @@ Create React App보다 훨씬 빠른 개발 서버 시작 속도를 제공합니
 ### `npm run build`
 
 프로덕션용 앱을 `build` 폴더에 빌드합니다.
-TypeScript 타입 체크 후 Vite로 최적화된 빌드를 생성합니다.
+Vite로 최적화된 빌드를 생성합니다.
 
 빌드가 압축되고 파일명에 해시가 포함됩니다.
 앱을 배포할 준비가 완료됩니다!
@@ -114,22 +116,32 @@ Vitest로 테스트를 실행합니다.
 jupiter-react/
 ├── public/                    # 정적 에셋 (이미지, 폰트 등)
 ├── src/
-│   ├── assets/                # CSS, 이미지 등 리소스
 │   ├── components/            # 재사용 가능한 UI 컴포넌트
-│   │   ├── auth/              # 인증 관련 컴포넌트 (로그인 모달 등)
 │   │   ├── layout/            # 페이지 레이아웃 (헤더, 푸터)
 │   │   ├── sections/          # 페이지의 각 섹션
-│   │   └── PricePredictionChart.jsx  # AI 가격 예측 차트 컴포넌트
-│   ├── pages/                 # 라우팅될 페이지 컴포넌트
-│   │   ├── ProductDetail.jsx  # 상품 상세 페이지 (가격 예측 포함)
-│   │   └── ...
-│   ├── services/              # API 서비스 계층 (TODO: 구현 예정)
+│   │   ├── AlcoholPreloader.jsx    # 로딩 스피너 컴포넌트
+│   │   └── PricePredictionChart.jsx # AI 가격 예측 차트 컴포넌트
+│   ├── hooks/                 # 커스텀 React 훅
+│   │   └── useFileUpload.js   # 파일 업로드 관리 훅
+│   ├── pages/                 # 라우팅될 페이지 컴포넌트 (18개)
+│   │   ├── Home.jsx           # 메인 홈페이지
+│   │   ├── Shop.jsx           # 상품 목록 페이지
+│   │   ├── ProductDetail.jsx  # 상품 상세 페이지
+│   │   ├── Community.jsx      # 커뮤니티 게시판
+│   │   ├── AdminPanel.jsx     # 관리자 패널
+│   │   └── ...                # 기타 페이지들
+│   ├── services/              # API 서비스 계층
+│   │   ├── api.js             # 기본 API 클라이언트
+│   │   ├── authService.js     # 인증 서비스
+│   │   ├── adminService.js    # 관리자 서비스
+│   │   └── ...                # 기타 서비스들
+│   ├── utils/                 # 유틸리티 함수
+│   │   ├── categoryUtils.js   # 카테고리 관련 유틸리티
+│   │   └── fileUtils.js       # 파일 처리 유틸리티
 │   ├── App.jsx                # 메인 앱 컴포넌트 (라우터 설정)
 │   ├── index.css              # 전역 CSS 스타일
 │   └── index.jsx              # 애플리케이션 진입점
 ├── INTEGRATION_GUIDE.md       # 백엔드 API 연동 가이드
-├── .gitignore                 # Git이 무시할 파일/폴더 목록
-├── index.html                 # Vite 앱의 HTML 템플릿
 ├── package.json               # 프로젝트 의존성 및 스크립트
 ├── tailwind.config.js         # Tailwind CSS 설정
 └── vite.config.ts             # Vite 설정
@@ -168,12 +180,12 @@ jupiter-react/
 - 가격 비교 인터페이스
 - Chart.js 기반 시각화
 
-### 🚧 개발 중 (TODO)
-- 실제 백엔드 API 연동 (현재 하드코딩)
-- 크롤링 시스템 연동
+### 🚧 개발 예정
+- 백엔드 API 연동
+- 크롤링 시스템 구축
 - 실시간 가격 업데이트
-- 사용자 인증 시스템
-- 즐겨찾기 기능
+- 데이터베이스 연동
+- 실제 상품 데이터 적용
 
 > 📖 **상세 개발 가이드**: [`INTEGRATION_GUIDE.md`](./INTEGRATION_GUIDE.md) 참조
 
