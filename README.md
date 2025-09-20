@@ -9,7 +9,7 @@ AI 기반 가격 예측 기능을 갖춘 현대적인 쇼핑몰 가격비교 플
 - **React 19** - 사용자 인터페이스 라이브러리
 - **Vite** - 빠른 빌드 도구 및 개발 서버
 - **Tailwind CSS v3** - 유틸리티 기반 CSS 프레임워크
-- **@tanstack/react-query** - 서버 상태 관리
+- **@tanstack/react-query** - 서버 상태 관리 (API 데이터 캐싱, 동기화, 에러 처리를 자동화하여 복잡한 상태 관리 로직을 간소화)
 - **Chart.js** - AI 가격 예측 차트 시각화
 - **React Chart.js 2** - React용 Chart.js 래퍼
 - **React Router Dom** - 클라이언트 사이드 라우팅
@@ -19,7 +19,7 @@ AI 기반 가격 예측 기능을 갖춘 현대적인 쇼핑몰 가격비교 플
 ### Backend (연동)
 - **Spring Boot** - RESTful API 서버
 - **OpenAI GPT API** - AI 가격 예측 엔진
-- **Java 17** - 백엔드 개발 언어
+- **Java 21** - 백엔드 개발 언어
 
 ## ✨ 주요 기능
 
@@ -37,78 +37,6 @@ AI 기반 가격 예측 기능을 갖춘 현대적인 쇼핑몰 가격비교 플
 - ✅ **컴포넌트 기반 아키텍처** - 재사용 가능한 React 컴포넌트
 - ✅ **부드러운 애니메이션** - 호버 효과 및 트랜지션
 
-## 🛠️ 시작하기
-
-### 1. 저장소 복제
-
-```bash
-git clone https://github.com/heeezni/jupiter-react.git
-cd jupiter-react
-```
-
-### 2. 의존성 설치
-
-프로젝트에 필요한 패키지를 설치합니다.
-
-```bash
-npm install
-```
-
-### 3. 백엔드 서버 실행 (AI 가격 예측용)
-
-AI 가격 예측 기능을 사용하려면 OpenAI API 서버를 실행해야 합니다.
-
-```bash
-# 별도 터미널에서 OpenAI API 프로젝트로 이동
-cd ../OpenAIApi
-
-# OpenAI API 키 환경변수 설정
-export OPENAI_API_KEY="your-openai-api-key-here"
-
-# Spring Boot 서버 실행 (포트 7777)
-./gradlew bootRun
-```
-
-**주의:** OpenAI API 키가 필요합니다. [OpenAI 플랫폼](https://platform.openai.com/api-keys)에서 발급받으세요.
-
-### 4. 프론트엔드 개발 서버 실행
-
-```bash
-# jupiter-react 디렉토리에서
-npm run dev
-```
-
-브라우저에서 [http://localhost:5174](http://localhost:5174)를 열어 확인할 수 있습니다.
-
-## ⚙️ 사용 가능한 스크립트
-
-프로젝트 디렉토리에서 다음 명령어를 실행할 수 있습니다:
-
-### `npm run dev`
-
-Vite 개발 서버를 시작합니다.
-브라우저에서 [http://localhost:5173](http://localhost:5173)을 열어 확인할 수 있습니다.
-
-코드를 수정하면 페이지가 즉시 새로고침됩니다 (HMR - Hot Module Replacement).
-Create React App보다 훨씬 빠른 개발 서버 시작 속도를 제공합니다.
-
-### `npm run build`
-
-프로덕션용 앱을 `build` 폴더에 빌드합니다.
-Vite로 최적화된 빌드를 생성합니다.
-
-빌드가 압축되고 파일명에 해시가 포함됩니다.
-앱을 배포할 준비가 완료됩니다!
-
-### `npm run preview`
-
-빌드된 앱을 로컬에서 미리보기할 수 있습니다.
-프로덕션 빌드가 올바르게 작동하는지 확인할 때 유용합니다.
-
-### `npm test`
-
-Vitest로 테스트를 실행합니다.
-빠르고 현대적인 테스트 러너로 Jest보다 빠른 성능을 제공합니다.
 
 ## 📁 프로젝트 구조
 
@@ -121,7 +49,7 @@ jupiter-react/
 │   │   ├── sections/          # 페이지의 각 섹션
 │   │   ├── AlcoholPreloader.jsx    # 로딩 스피너 컴포넌트
 │   │   └── PricePredictionChart.jsx # AI 가격 예측 차트 컴포넌트
-│   ├── hooks/                 # 커스텀 React 훅
+│   ├── hooks/                 # 커스텀 React 훅 (컴포넌트 간 로직 재사용을 위한 함수)
 │   │   └── useFileUpload.js   # 파일 업로드 관리 훅
 │   ├── pages/                 # 라우팅될 페이지 컴포넌트 (18개)
 │   │   ├── Home.jsx           # 메인 홈페이지
@@ -146,6 +74,21 @@ jupiter-react/
 ├── tailwind.config.js         # Tailwind CSS 설정
 └── vite.config.ts             # Vite 설정
 ```
+
+## 🔧 기술적 특징
+
+### React Query 도입 이유
+- **서버 상태 관리**: API 호출, 캐싱, 동기화를 자동화하여 개발 복잡도 감소
+- **성능 최적화**: 중복 요청 방지, 백그라운드 데이터 갱신, 지능적 캐싱
+- **사용자 경험**: 로딩 상태, 에러 처리, 재시도 로직을 일관되게 제공
+- **실시간성**: 가격 데이터의 실시간 업데이트와 동기화가 중요한 쇼핑몰 특성에 적합
+
+### Custom Hooks (커스텀 훅)
+React 16.8에서 도입된 기능으로, 컴포넌트 로직을 재사용 가능한 함수로 분리:
+- **상태 로직 재사용**: 여러 컴포넌트에서 동일한 상태 관리 로직 공유
+- **관심사 분리**: UI 렌더링과 비즈니스 로직을 명확히 구분
+- **테스트 용이성**: 로직을 독립적으로 테스트 가능
+- **코드 가독성**: 복잡한 컴포넌트를 더 작고 이해하기 쉬운 단위로 분해
 
 ## 🤖 AI 가격 예측 시스템
 
@@ -189,31 +132,3 @@ jupiter-react/
 
 > 📖 **상세 개발 가이드**: [`INTEGRATION_GUIDE.md`](./INTEGRATION_GUIDE.md) 참조
 
-## 🚀 배포
-
-`npm run build` 명령어를 실행하여 생성된 `dist` 폴더의 내용을 웹 서버에 배포할 수 있습니다.
-Netlify, Vercel, GitHub Pages와 같은 정적 호스팅 서비스를 사용하면 쉽게 배포할 수 있습니다.
-
-## 🚀 배포 및 운영
-
-### 개발 환경 실행
-```bash
-# 1. OpenAI API 서버 실행 (포트 7777)
-cd ../OpenAIApi && ./gradlew bootRun
-
-# 2. React 개발 서버 실행 (포트 5174)
-cd jupiter-react && npm run dev
-```
-
-### 프로덕션 빌드
-```bash
-npm run build
-```
-
-### 환경변수 설정
-```bash
-# .env.local 파일 생성
-REACT_APP_API_BASE_URL=http://localhost:8080
-REACT_APP_AI_API_BASE_URL=http://localhost:7777
-OPENAI_API_KEY=your-openai-api-key
-```
