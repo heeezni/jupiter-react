@@ -133,7 +133,7 @@ function Shop() {
 
   useEffect(() => {
     setIsLoading(true);
-  }, []); // 빈 배열 [] = 컴포넌트가 처음 마운트될 때 한 번만 실행
+  }, []);
 
   const handleLoadingComplete = () => {
     setIsLoading(false);
@@ -142,8 +142,7 @@ function Shop() {
   return (
     <>
       <AlcoholPreloader isLoading={isLoading} handleLoadingComplete={handleLoadingComplete} />
-      {/* // prop으로 전달 */}
-      <div className="py-16 bg-gray-50">
+    <div className="py-16 bg-gray-50">
       {/* 페이지 헤더 */}
       <div
         className="relative py-24 mb-12 bg-cover bg-center"

@@ -1,12 +1,18 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { getEnglishCategory, KOREAN_CATEGORIES } from '../utils/categoryUtils';
+import { useFileUpload } from '../hooks/useFileUpload';
+import { createPostWithFiles, fetchPopularPosts } from '../services/api';
+import { categorizeAttachments } from '../utils/fileUtils';
 
 function PostForm() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     category: '',
     title: '',
     content: '',
-    author_name: '',
     anonymous_email: '',
     anonymous_pwd: '',
     tags: '',
@@ -14,15 +20,33 @@ function PostForm() {
     attachments: []
   });
 
-  const [previewImages, setPreviewImages] = useState([]);
+  // 파일 업로드 훅 사용
+  const { previewImages, handleFileUpload, removeFile } = useFileUpload(formData, setFormData);
 
-  const categories = [
-    '자유게시판',
-    '가격정보',
-    '술리뷰',
-    '질문답변',
-    '이벤트'
-  ];
+  const categories = KOREAN_CATEGORIES;
+
+  // 인기 게시글 조회 (전체 카테고리, 첫 번째 페이지, 조회수 순 정렬)
+  const { data: popularPostsData } = useQuery({
+    queryKey: ['popularPosts', '전체', 1],
+    queryFn: fetchPopularPosts,
+    staleTime: 5 * 60 * 1000, // 5분간 fresh 상태 유지
+  });
+
+  const popularPosts = popularPostsData?.posts || [];
+
+  const { mutate, isLoading: isSubmitting } = useMutation({
+    mutationFn: createPostWithFiles,
+    onSuccess: (data) => {
+      // 'posts' 쿼리를 무효화하여 목록 페이지가 최신 데이터를 다시 불러오도록 함
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      alert('게시글이 성공적으로 작성되었습니다!');
+      navigate(`/post/${data.postId}`);
+    },
+    onError: (error) => {
+      console.error('게시글 작성 실패:', error);
+      alert(`게시글 작성에 실패했습니다: ${error.message}`);
+    }
+  });
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -32,52 +56,22 @@ function PostForm() {
     }));
   };
 
-  const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length + previewImages.length > 5) {
-      alert('최대 5개의 파일까지 업로드 가능합니다.');
-      return;
-    }
-
-    const newPreviews = files.map(file => ({
-      file,
-      url: file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
-      id: Date.now() + Math.random(),
-      name: file.name,
-      size: file.size,
-      type: file.type
-    }));
-
-    setPreviewImages(prev => [...prev, ...newPreviews]);
-    setFormData(prev => ({
-      ...prev,
-      attachments: [...prev.attachments, ...files]
-    }));
-  };
-
-  const removeImage = (id) => {
-    setPreviewImages(prev => prev.filter(img => img.id !== id));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
     const postData = {
-      category: formData.category,
+      category: getEnglishCategory(formData.category),
       title: formData.title,
       content: formData.content,
       tags: formData.tags,
-      author: {
-        is_anonymous: formData.is_anonymous,
-        author_name: formData.is_anonymous ? null : formData.author_name,
-        anonymous_email: formData.is_anonymous ? formData.anonymous_email : null,
-        anonymous_pwd: formData.is_anonymous ? formData.anonymous_pwd : null
-      },
-      attachments: formData.attachments
+      isAnonymous: formData.is_anonymous,
+      authorName: formData.is_anonymous ? '익명' : '현재사용자', // TODO: 실제 로그인된 사용자 정보로 교체
+      anonymousEmail: formData.is_anonymous ? formData.anonymous_email : null,
+      anonymousPassword: formData.is_anonymous ? formData.anonymous_pwd : null
     };
 
-    console.log('게시글 데이터:', postData);
-    alert('게시글이 성공적으로 작성되었습니다!');
+    mutate({ postData, files: formData.attachments });
   };
 
   return (
@@ -104,8 +98,11 @@ function PostForm() {
           <span className="text-primary font-medium">글쓰기</span>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* 메인 콘텐츠 영역 */}
+            <div className="lg:col-span-2">
+              <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-8">
             {/* 기본 정보 섹션 */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
@@ -184,7 +181,6 @@ function PostForm() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                   required
                 />
-                <p className="text-sm text-gray-500 mt-1">최소 10자 이상 작성해주세요.</p>
               </div>
             </div>
 
@@ -212,32 +208,75 @@ function PostForm() {
               </div>
 
               {previewImages.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
-                  {previewImages.map(file => (
-                    <div key={file.id} className="relative">
-                      {file.url ? (
-                        <img
-                          src={file.url}
-                          alt="미리보기"
-                          className="w-full h-24 object-cover rounded-lg"
-                        />
-                      ) : (
-                        <div className="w-full h-24 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <div className="text-center">
-                            <i className="fas fa-file text-2xl text-gray-400"></i>
-                            <p className="text-xs text-gray-500 mt-1">{file.name}</p>
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-4">선택된 파일</h3>
+                  {(() => {
+                    // 이미지와 일반 파일 분리
+                    const { images, files } = categorizeAttachments(previewImages.map(file => ({
+                      ...file,
+                      originalFilename: file.name,
+                      fileUrl: file.url,
+                      fileSize: Math.round(file.size / 1024)
+                    })));
+
+                    return (
+                      <div className="space-y-4">
+                        {/* 이미지들 - 가로로 나열 */}
+                        {images.length > 0 && (
+                          <div className="flex flex-wrap gap-3">
+                            {images.map((file) => (
+                              <div key={file.id} className="relative group">
+                                <img
+                                  src={file.fileUrl}
+                                  alt={file.originalFilename}
+                                  className="w-32 h-32 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                                  onClick={() => window.open(file.fileUrl, '_blank')}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => removeFile(file.id)}
+                                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                                  title="파일 삭제"
+                                >
+                                  ×
+                                </button>
+                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <p className="truncate">{file.originalFilename}</p>
+                                  <p className="text-center">{file.fileSize}KB</p>
+                                </div>
+                              </div>
+                            ))}
                           </div>
-                        </div>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removeImage(file.id)}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
+                        )}
+
+                        {/* 일반 파일들 - 세로로 길게 */}
+                        {files.map((file) => (
+                          <div
+                            key={file.id}
+                            className="bg-gray-50 rounded-lg p-4 cursor-pointer hover:bg-gray-100 transition-colors"
+                          >
+                            <div className="flex items-center space-x-3">
+                              <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i className="fas fa-file text-gray-400 text-lg"></i>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-gray-700 font-medium truncate">{file.originalFilename}</p>
+                                <p className="text-xs text-gray-500">{file.fileSize}KB</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => removeFile(file.id)}
+                                className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors flex-shrink-0"
+                                title="파일 삭제"
+                              >
+                                ×
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </div>
               )}
             </div>
@@ -296,38 +335,20 @@ function PostForm() {
                     </div>
                   </div>
                 ) : (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      닉네임 *
-                    </label>
-                    <input
-                      type="text"
-                      name="author_name"
-                      value={formData.author_name}
-                      onChange={handleInputChange}
-                      placeholder="닉네임을 입력하세요"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                      required={!formData.is_anonymous}
-                    />
+                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <h4 className="text-sm font-medium text-blue-800 mb-2">로그인된 사용자</h4>
+                    <p className="text-blue-700">
+                      <strong>사용자명:</strong> {/* TODO: 실제 로그인된 사용자 정보로 교체 */}
+                      현재사용자
+                    </p>
+                    <p className="text-xs text-blue-600 mt-1">
+                      * 로그인된 사용자 정보로 게시글이 작성됩니다.
+                    </p>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* 작성 가이드라인 */}
-            <div className="mb-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h3 className="text-lg font-semibold text-blue-800 mb-3 flex items-center">
-                <i className="fas fa-info-circle mr-2"></i>
-                커뮤니티 가이드라인
-              </h3>
-              <ul className="text-sm text-blue-700 space-y-1">
-                <li>• 건전하고 유익한 정보를 공유해주세요</li>
-                <li>• 개인정보나 연락처는 공개하지 마세요</li>
-                <li>• 광고성 게시물은 삭제될 수 있습니다</li>
-                <li>• 다른 사용자를 존중하는 댓글을 작성해주세요</li>
-                <li>• 허위 정보나 부적절한 내용은 신고될 수 있습니다</li>
-              </ul>
-            </div>
 
             {/* 약관 동의 */}
             <div className="mb-8 p-4 bg-gray-50 rounded-lg">
@@ -356,37 +377,109 @@ function PostForm() {
               </Link>
               <button
                 type="submit"
-                className="px-8 py-3 bg-primary text-white rounded-lg hover:bg-blue-800 transition-colors font-semibold"
+                disabled={isSubmitting}
+                className="px-8 py-3 bg-primary text-white rounded-lg hover:bg-blue-800 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <i className="fas fa-paper-plane mr-2"></i>
-                게시글 등록
+                {isSubmitting ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin mr-2"></i>
+                    게시글 등록 중...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-paper-plane mr-2"></i>
+                    게시글 등록
+                  </>
+                )}
               </button>
             </div>
           </form>
+            </div>
 
-          {/* 인기 게시글 미리보기 */}
-          <div className="mt-12 bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-              <i className="fas fa-fire text-red-500 mr-2"></i>
-              인기 게시글 둘러보기
-            </h3>
-            <div className="space-y-3">
-              {[
-                { title: "소주 추천 - 처음처럼과 참이슬 비교", category: "주류 추천", comments: 23 },
-                { title: "편의점 주류 할인 정보 모음", category: "이벤트/할인", comments: 15 },
-                { title: "와인 초보자를 위한 가이드", category: "질문/답변", comments: 31 }
-              ].map((post, index) => (
-                <div key={index} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-xs bg-primary text-white px-2 py-1 rounded-full">{post.category}</span>
-                    <span className="text-gray-800 hover:text-primary cursor-pointer">{post.title}</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <i className="fas fa-comment mr-1"></i>
-                    {post.comments}
+            {/* 사이드바 */}
+            <div className="lg:col-span-1">
+              <div className="space-y-6 sticky top-8">
+                {/* 인기 게시글 */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                    <i className="fas fa-fire text-red-500 mr-2"></i>
+                    인기 게시글
+                  </h3>
+                  <div className="space-y-3">
+                    {popularPosts.length > 0 ? (
+                      popularPosts.slice(0, 3).map(post => (
+                        <div key={post.post_id} className="border-b border-gray-100 pb-3 last:border-b-0">
+                          <Link to={`/post/${post.post_id}`}>
+                            <h4 className="text-sm font-semibold text-gray-800 mb-1 line-clamp-1 flex items-center hover:text-primary transition-colors">
+                              {post.title}
+                              {post.has_attachments && (
+                                <i className="fas fa-paperclip ml-1 text-red-400 text-xs" title="첨부파일 있음"></i>
+                              )}
+                            </h4>
+                          </Link>
+                          <div className="flex items-center text-xs text-gray-500">
+                            <span>{post.is_anonymous ? '익명' : post.author_name}</span>
+                            <span className="mx-2">•</span>
+                            <span>{post.views}회</span>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-gray-500 text-sm text-center py-4">
+                        인기 게시글을 불러오는 중...
+                      </div>
+                    )}
                   </div>
                 </div>
-              ))}
+
+                {/* 커뮤니티 가이드라인 */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                    <i className="fas fa-info-circle text-blue-500 mr-2"></i>
+                    커뮤니티 가이드라인
+                  </h3>
+                  <div className="space-y-3 text-sm text-gray-600">
+                    <div className="flex items-start space-x-2">
+                      <i className="fas fa-check text-green-500 mt-1 text-xs"></i>
+                      <span>건전하고 유익한 정보를 공유해주세요</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <i className="fas fa-check text-green-500 mt-1 text-xs"></i>
+                      <span>주류 관련 후기와 추천을 자유롭게 작성하세요</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <i className="fas fa-times text-red-500 mt-1 text-xs"></i>
+                      <span>개인정보나 연락처는 공개하지 마세요</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <i className="fas fa-times text-red-500 mt-1 text-xs"></i>
+                      <span>광고성 게시물은 삭제될 수 있습니다</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <i className="fas fa-times text-red-500 mt-1 text-xs"></i>
+                      <span>다른 사용자를 존중하는 댓글을 작성해주세요</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <i className="fas fa-times text-red-500 mt-1 text-xs"></i>
+                      <span>허위 정보나 부적절한 내용은 신고될 수 있습니다</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 커뮤니티 바로가기 */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                    <i className="fas fa-users text-green-500 mr-2"></i>
+                    커뮤니티
+                  </h3>
+                  <div className="space-y-3">
+                    <Link to="/community" className="block p-3 bg-primary text-white rounded-lg hover:bg-blue-800 transition-colors text-center">
+                      <i className="fas fa-list mr-2"></i>
+                      전체 게시글 보기
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

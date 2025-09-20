@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {fetchPost, fetchPopularPosts, likePost, createComment, updateComment, deleteComment, verifyAnonymousComment, deletePost as deletePostAPI, verifyAnonymousPost} from '../services/api';
+import { categorizeAttachments } from '../utils/fileUtils';
+import { getCategoryStyle } from '../utils/categoryUtils';
 
 function PostDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [post, setPost] = useState(null);
-  const [comments, setComments] = useState([]);
+  const queryClient = useQueryClient();
+
   const [commentForm, setCommentForm] = useState({
     content: '',
     author_name: '',
@@ -13,18 +17,23 @@ function PostDetail() {
     anonymous_pwd: '',
     is_anonymous: false
   });
-  const [loading, setLoading] = useState(true);
+  const [editingComment, setEditingComment] = useState(null);
+  const [editCommentContent, setEditCommentContent] = useState('');
+  const [showCommentAuthModal, setShowCommentAuthModal] = useState(false);
+  const [commentAuthForm, setCommentAuthForm] = useState({
+    email: '',
+    password: '',
+    action: '', // 'edit' or 'delete'
+    commentId: null,
+    comment: null
+  });
+
+  // 익명 댓글 수정을 위한 인증 정보 저장
+  const [authenticatedAnonymousComment, setAuthenticatedAnonymousComment] = useState(null);
   const [currentIconIndex, setCurrentIconIndex] = useState(0);
 
   const alcoholIcons = [
-    '🍷', // 와인잔
-    '🍺', // 맥주잔
-    '🍾', // 샴페인병
-    '🍶', // 소주병
-    '🥃', // 위스키잔
-    '🍻', // 맥주 건배
-    '🥂', // 샴페인 건배
-    '🍸'  // 칵테일
+    '🍷', '🍺', '🍾', '🍶', '🥃', '🍻', '🥂', '🍸'
   ];
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authForm, setAuthForm] = useState({
@@ -33,11 +42,29 @@ function PostDetail() {
     action: '' // 'edit' or 'delete'
   });
   // TODO: 실제 로그인 상태를 가져오는 hook 또는 context 사용
-  const [currentUser, setCurrentUser] = useState({
+  const currentUser = {
     user_id: 1,
     author_name: '위스키러버',
     is_logged_in: true // 임시상태
-  }); // MOCK DATA - 실제로는 useAuth() hook에서 가져옴
+  }; // MOCK DATA - 실제로는 useAuth() hook에서 가져옴
+
+  // React Query를 사용하여 게시글 상세 정보 조회
+  const { data: post, isLoading: loading, isError, error } = useQuery({
+    queryKey: ['post', id],
+    queryFn: fetchPost
+  });
+
+  // 인기 게시글 조회 (전체 카테고리, 첫 번째 페이지, 조회수 순 정렬)
+  const { data: popularPostsData } = useQuery({
+    queryKey: ['popularPosts', '전체', 1],
+    queryFn: fetchPopularPosts,
+    staleTime: 5 * 60 * 1000, // 5분간 fresh 상태 유지
+  });
+
+  const popularPosts = popularPostsData?.posts || [];
+
+  // React Query에서 댓글 데이터 직접 사용
+  const comments = post?.comments || [];
 
   // 아이콘 회전 애니메이션
   useEffect(() => {
@@ -50,83 +77,14 @@ function PostDetail() {
     return () => clearInterval(interval);
   }, [loading, alcoholIcons.length]);
 
-  useEffect(() => {
-    // TODO: 실제 API 호출로 바꿀 것 - GET /api/posts/{id}
-    const mockPost = {
-      post_id: parseInt(id),
-      title: '조니워커 블루라벨 할인 정보 공유',
-      content: `쿠팡에서 조니워커 블루라벨이 20% 할인 중이에요!
+  if (isError) {
+    console.error('Failed to fetch post:', error);
+    alert('게시글을 불러오는데 실패했습니다.');
+    // 에러 발생 시 커뮤니티 페이지로 리디렉션
+    navigate('/community');
+    return null;
+  }
 
-평소에 너무 비싸서 구매를 망설였는데, 이번에 할인가로 구매했습니다.
-정말 부드럽고 깊은 맛이 인상적이네요.
-
-할인 기간이 얼마 남지 않았으니 관심 있으신 분들은 서둘러주세요!
-
-#위스키 #조니워커 #할인정보 #쿠팡`,
-      author_name: '익명',
-      category: '가격정보',
-      created_at: '2024-01-15 14:30:00',
-      updated_at: '2024-01-15 14:30:00',
-      views: 152,
-      likes: 23,
-      tags: '#위스키 #할인 #쿠팡',
-      is_anonymous: true,
-      anonymous_email: 'test@example.com',
-      anonymous_pwd: 'password123',
-      attachments: []
-    };
-
-    // TODO: 실제 API 호출로 바꿀 것 - GET /api/comments?post_id={id}
-    const mockComments = [
-      {
-        comment_id: 1,
-        post_id: parseInt(id),
-        content: '좋은 정보 감사합니다! 바로 주문했어요.',
-        author_name: '위스키초보',
-        created_at: '2024-01-15 15:00:00',
-        is_anonymous: false
-      },
-      {
-        comment_id: 2,
-        post_id: parseInt(id),
-        content: '가격이 정말 괜찮네요. 추천해주셔서 감사해요!',
-        author_name: '익명',
-        created_at: '2024-01-15 16:20:00',
-        is_anonymous: true
-      },
-      {
-        comment_id: 3,
-        post_id: parseInt(id),
-        content: '블루라벨은 정말 맛있죠. 특별한 날에 마시기 좋아요.',
-        author_name: '스카치러버',
-        created_at: '2024-01-15 18:45:00',
-        is_anonymous: false
-      }
-    ];
-
-    // TODO: 비동기 API 호출로 바꿀 것
-    // const fetchPost = async () => {
-    //   try {
-    //     const postResponse = await fetch(`/api/posts/${id}`);
-    //     const commentsResponse = await fetch(`/api/comments?post_id=${id}`);
-    //     const postData = await postResponse.json();
-    //     const commentsData = await commentsResponse.json();
-    //     setPost(postData);
-    //     setComments(commentsData);
-    //   } catch (error) {
-    //     console.error('Failed to fetch post:', error);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-    // fetchPost();
-
-    setTimeout(() => {
-      setPost(mockPost);
-      setComments(mockComments);
-      setLoading(false);
-    }, 500);
-  }, [id]);
 
   const handleCommentInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -136,87 +94,446 @@ function PostDetail() {
     }));
   };
 
-  const handleCommentSubmit = async (e) => {
+  const handleCommentSubmit = (e) => {
     e.preventDefault();
 
-    // TODO: 실제 API 호출로 바꿀 것 - POST /api/comments
-    // try {
-    //   const response = await fetch('/api/comments', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'Authorization': `Bearer ${token}` // 회원인 경우
-    //     },
-    //     body: JSON.stringify({
-    //       post_id: parseInt(id),
-    //       content: commentForm.content,
-    //       is_anonymous: commentForm.is_anonymous,
-    //       anonymous_email: commentForm.anonymous_email,
-    //       anonymous_pwd: commentForm.anonymous_pwd
-    //     })
-    //   });
-    //   const newComment = await response.json();
-    //   setComments(prev => [...prev, newComment]);
-    // } catch (error) {
-    //   console.error('Failed to create comment:', error);
-    //   alert('댓글 등록에 실패했습니다.');
-    //   return;
-    // }
-
-    const newComment = {
-      comment_id: comments.length + 1,
-      post_id: parseInt(id),
+    const commentData = {
+      postId: parseInt(id),
       content: commentForm.content,
-      author_name: commentForm.is_anonymous ? '익명' : commentForm.author_name,
-      created_at: new Date().toLocaleString('ko-KR'),
-      is_anonymous: commentForm.is_anonymous
+      isAnonymous: commentForm.is_anonymous,
+      authorName: commentForm.author_name,
+      anonymousEmail: commentForm.is_anonymous ? commentForm.anonymous_email : null,
+      anonymousPassword: commentForm.is_anonymous ? commentForm.anonymous_pwd : null
     };
 
-    setComments(prev => [...prev, newComment]);
-    setCommentForm({
-      content: '',
-      author_name: '',
-      anonymous_email: '',
-      anonymous_pwd: '',
-      is_anonymous: false
-    });
-
-    alert('댓글이 등록되었습니다!');
+    createCommentMutation.mutate(commentData);
   };
 
-  const handleLike = async () => {
-    // TODO: 실제 API 호출로 바꿀 것 - POST /api/likes
-    // Redis를 사용하여 IP 기반 중복 방지 처리
-    // try {
-    //   const response = await fetch('/api/likes', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({ post_id: parseInt(id) })
-    //   });
-    //   const result = await response.json();
-    //   if (result.success) {
-    //     setPost(prev => ({ ...prev, likes: result.newLikeCount }));
-    //   } else {
-    //     alert('이미 좋아요를 누르셨습니다.');
-    //   }
-    // } catch (error) {
-    //   console.error('Failed to like post:', error);
-    // }
+  // 댓글 수정 시작
+  const startEditComment = (comment) => {
+    setEditingComment(comment.comment_id);
+    setEditCommentContent(comment.content);
+  };
 
-    setPost(prev => ({
+  // 댓글 수정 취소
+  const cancelEditComment = () => {
+    setEditingComment(null);
+    setEditCommentContent('');
+    // 익명 댓글 인증 정보 초기화
+    setAuthenticatedAnonymousComment(null);
+  };
+
+  // 댓글 수정 제출
+  const handleEditComment = (commentId) => {
+    const comment = comments.find(c => c.comment_id === commentId);
+    const commentData = {
+      postId: parseInt(id),
+      content: editCommentContent,
+      authorName: comment.is_anonymous ? null : currentUser.author_name,
+      isAnonymous: comment.is_anonymous,
+      // 익명 댓글의 경우 인증된 정보 사용
+      ...(comment.is_anonymous && authenticatedAnonymousComment && {
+        anonymousEmail: authenticatedAnonymousComment.email,
+        anonymousPassword: authenticatedAnonymousComment.password
+      })
+    };
+
+    updateCommentMutation.mutate({ commentId, commentData });
+  };
+
+  // 댓글 삭제
+  const handleDeleteComment = (commentId) => {
+    if (!window.confirm('정말로 댓글을 삭제하시겠습니까?')) {
+      return;
+    }
+
+    const requestData = {
+      postId: parseInt(id),
+      authorName: currentUser.author_name, // 임시로 현재 사용자 이름 사용
+      isAnonymous: false
+    };
+
+    deleteCommentMutation.mutate({ commentId, requestData });
+  };
+
+  // 익명 댓글 수정 시작
+  const handleAnonymousCommentEdit = (comment) => {
+    setCommentAuthForm({
+      email: '',
+      password: '',
+      action: 'edit',
+      commentId: comment.comment_id,
+      comment: comment
+    });
+    setShowCommentAuthModal(true);
+  };
+
+  // 익명 댓글 삭제 시작
+  const handleAnonymousCommentDelete = (commentId) => {
+    const comment = comments.find(c => c.comment_id === commentId);
+    setCommentAuthForm({
+      email: '',
+      password: '',
+      action: 'delete',
+      commentId: commentId,
+      comment: comment
+    });
+    setShowCommentAuthModal(true);
+  };
+
+  // 익명 댓글 인증 처리
+  const handleCommentAuthSubmit = async (e) => {
+    e.preventDefault();
+
+    if (commentAuthForm.action === 'edit') {
+      // 수정의 경우 인증 확인 API를 사용하여 편집 모드로 전환
+      const authData = {
+        anonymousEmail: commentAuthForm.email,
+        anonymousPassword: commentAuthForm.password
+      };
+
+      verifyAnonymousCommentMutation.mutate({
+        commentId: commentAuthForm.commentId,
+        authData
+      });
+    } else if (commentAuthForm.action === 'delete') {
+      // 삭제의 경우 바로 실행
+      const requestData = {
+        postId: parseInt(id),
+        anonymousEmail: commentAuthForm.email,
+        anonymousPassword: commentAuthForm.password,
+        isAnonymous: true
+      };
+
+      // 성공 시 모달 닫기를 위한 콜백 설정
+      deleteCommentMutation.mutate(
+        { commentId: commentAuthForm.commentId, requestData },
+        {
+          onSuccess: () => {
+            setShowCommentAuthModal(false);
+            setCommentAuthForm({
+              email: '',
+              password: '',
+              action: '',
+              commentId: null,
+              comment: null
+            });
+          },
+          onError: (error) => {
+            if (error.message.includes('403')) {
+              alert('이메일 또는 비밀번호가 일치하지 않습니다.');
+            }
+          }
+        }
+      );
+    }
+  };
+
+  // 댓글 인증 폼 입력 처리
+  const handleCommentAuthInputChange = (e) => {
+    const { name, value } = e.target;
+    setCommentAuthForm(prev => ({
       ...prev,
-      likes: prev.likes + 1
+      [name]: value
     }));
+  };
+
+  const { mutate: likeMutate } = useMutation({
+    mutationFn: () => likePost(id),
+    onMutate: async () => {
+      // 진행중인 'post' 쿼리를 취소하여 이전 데이터와 충돌하지 않도록 함
+      await queryClient.cancelQueries({ queryKey: ['post', id] });
+
+      // 현재 캐시된 데이터의 스냅샷을 만듬
+      const previousPost = queryClient.getQueryData(['post', id]);
+
+      // UI를 즉시 업데이트 (낙관적 업데이트)
+      queryClient.setQueryData(['post', id], (oldData) => ({
+        ...oldData,
+        likes: oldData.likes + 1,
+      }));
+
+      // 스냅샷을 반환하여 에러 발생 시 롤백에 사용
+      return { previousPost };
+    },
+    onError: (err, variables, context) => {
+      // 에러 발생 시 onMutate에서 만든 스냅샷으로 데이터 롤백
+      if (context.previousPost) {
+        queryClient.setQueryData(['post', id], context.previousPost);
+      }
+      console.error('Failed to like post:', err);
+      alert('좋아요 처리에 실패했습니다.');
+    },
+    onSettled: () => {
+      // 성공/실패 여부와 관계없이, 서버와 클라이언트의 상태를 동기화하기 위해 쿼리를 다시 실행
+      queryClient.invalidateQueries({ queryKey: ['post', id] });
+    },
+  });
+
+  // 댓글 작성 mutation
+  const createCommentMutation = useMutation({
+    mutationFn: createComment,
+    onMutate: async (newCommentData) => {
+      // 진행중인 쿼리 취소
+      await queryClient.cancelQueries({ queryKey: ['post', id] });
+
+      // 현재 데이터 스냅샷
+      const previousPost = queryClient.getQueryData(['post', id]);
+
+      // 낙관적 업데이트 - 새 댓글 추가
+      queryClient.setQueryData(['post', id], (oldData) => {
+        if (!oldData) return oldData;
+
+        const newComment = {
+          comment_id: Date.now(), // 임시 ID
+          post_id: parseInt(id),
+          content: newCommentData.content,
+          author_name: newCommentData.authorName,
+          created_at: new Date().toLocaleString('ko-KR'),
+          is_anonymous: newCommentData.isAnonymous
+        };
+
+        return {
+          ...oldData,
+          comments: [...(oldData.comments || []), newComment]
+        };
+      });
+
+      return { previousPost };
+    },
+    onSuccess: () => {
+      // 댓글 폼 초기화
+      setCommentForm({
+        content: '',
+        author_name: '',
+        anonymous_email: '',
+        anonymous_pwd: '',
+        is_anonymous: false
+      });
+      // 성공 알림
+      alert('댓글이 성공적으로 등록되었습니다.');
+    },
+    onError: (err, variables, context) => {
+      // 에러 시 롤백
+      if (context?.previousPost) {
+        queryClient.setQueryData(['post', id], context.previousPost);
+      }
+      console.error('Failed to create comment:', err);
+      alert('댓글 등록에 실패했습니다.');
+    },
+    onSettled: () => {
+      // 서버와 동기화
+      queryClient.invalidateQueries({ queryKey: ['post', id] });
+    }
+  });
+
+  // 댓글 수정 mutation
+  const updateCommentMutation = useMutation({
+    mutationFn: updateComment,
+    onMutate: async ({ commentId, commentData }) => {
+      // 진행중인 쿼리 취소
+      await queryClient.cancelQueries({ queryKey: ['post', id] });
+
+      // 현재 데이터 스냅샷
+      const previousPost = queryClient.getQueryData(['post', id]);
+
+      // 낙관적 업데이트 - 댓글 수정
+      queryClient.setQueryData(['post', id], (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          comments: oldData.comments.map(comment =>
+            comment.comment_id === commentId
+              ? {
+                  ...comment,
+                  content: commentData.content,
+                  created_at: new Date().toLocaleString('ko-KR')
+                }
+              : comment
+          )
+        };
+      });
+
+      return { previousPost };
+    },
+    onSuccess: () => {
+      // 편집 상태 초기화
+      setEditingComment(null);
+      setEditCommentContent('');
+      setAuthenticatedAnonymousComment(null);
+      // 성공 알림
+      alert('댓글이 성공적으로 수정되었습니다.');
+    },
+    onError: (err, variables, context) => {
+      // 에러 시 롤백
+      if (context?.previousPost) {
+        queryClient.setQueryData(['post', id], context.previousPost);
+      }
+      console.error('Failed to update comment:', err);
+      alert('댓글 수정에 실패했습니다.');
+    },
+    onSettled: () => {
+      // 서버와 동기화
+      queryClient.invalidateQueries({ queryKey: ['post', id] });
+    }
+  });
+
+  // 댓글 삭제 mutation
+  const deleteCommentMutation = useMutation({
+    mutationFn: deleteComment,
+    onMutate: async ({ commentId }) => {
+      // 진행중인 쿼리 취소
+      await queryClient.cancelQueries({ queryKey: ['post', id] });
+
+      // 현재 데이터 스냅샷
+      const previousPost = queryClient.getQueryData(['post', id]);
+
+      // 낙관적 업데이트 - 댓글 삭제
+      queryClient.setQueryData(['post', id], (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          comments: oldData.comments.filter(comment => comment.comment_id !== commentId)
+        };
+      });
+
+      return { previousPost };
+    },
+    onSuccess: () => {
+      // 성공 알림
+      alert('댓글이 성공적으로 삭제되었습니다.');
+    },
+    onError: (err, variables, context) => {
+      // 에러 시 롤백
+      if (context?.previousPost) {
+        queryClient.setQueryData(['post', id], context.previousPost);
+      }
+      console.error('Failed to delete comment:', err);
+      alert('댓글 삭제에 실패했습니다.');
+    },
+    onSettled: () => {
+      // 서버와 동기화
+      queryClient.invalidateQueries({ queryKey: ['post', id] });
+    }
+  });
+
+  // 익명 댓글 인증 mutation
+  const verifyAnonymousCommentMutation = useMutation({
+    mutationFn: verifyAnonymousComment,
+    onSuccess: () => {
+      // 인증 성공 시 편집 모드로 전환
+      setEditingComment(commentAuthForm.commentId);
+      setEditCommentContent(commentAuthForm.comment.content);
+
+      // 인증 정보를 저장하여 나중에 수정 시 사용
+      setAuthenticatedAnonymousComment({
+        commentId: commentAuthForm.commentId,
+        email: commentAuthForm.email,
+        password: commentAuthForm.password
+      });
+
+      setShowCommentAuthModal(false);
+      setCommentAuthForm({
+        email: '',
+        password: '',
+        action: '',
+        commentId: null,
+        comment: null
+      });
+    },
+    onError: (error) => {
+      console.error('Failed to authenticate comment:', error);
+      if (error.message.includes('403')) {
+        alert('이메일 또는 비밀번호가 일치하지 않습니다.');
+      } else {
+        alert('인증에 실패했습니다.');
+      }
+    }
+  });
+
+  // 게시글 삭제 mutation
+  const deletePostMutation = useMutation({
+    mutationFn: deletePostAPI,
+    onSuccess: () => {
+      // 성공 알림
+      alert('게시글이 성공적으로 삭제되었습니다.');
+      // 삭제 성공 시 커뮤니티 페이지로 이동
+      navigate('/community');
+    },
+    onError: (error) => {
+      console.error('Failed to delete post:', error);
+      if (error.message.includes('403')) {
+        alert('삭제 권한이 없습니다.');
+      } else {
+        alert('게시글 삭제에 실패했습니다.');
+      }
+    }
+  });
+
+  // 익명 게시글 인증 mutation
+  const verifyAnonymousPostMutation = useMutation({
+    mutationFn: verifyAnonymousPost,
+    onError: (error) => {
+      console.error('Failed to verify anonymous post:', error);
+      if (error.message.includes('403')) {
+        alert('이메일 또는 비밀번호가 일치하지 않습니다.');
+      } else {
+        alert('인증에 실패했습니다.');
+      }
+    }
+  });
+
+  // 일반 회원 게시글 삭제
+  const handleDeletePost = () => {
+    if (!window.confirm('정말로 게시글을 삭제하시겠습니까?')) {
+      return;
+    }
+
+    const requestData = {
+      authorName: currentUser.author_name
+    };
+
+    deletePostMutation.mutate({ postId: id, requestData });
+  };
+
+  // 익명 게시글 삭제
+  const handleDeletePostWithAuth = (email, password) => {
+    if (!window.confirm('정말로 게시글을 삭제하시겠습니까?')) {
+      return;
+    }
+
+    const requestData = {
+      anonymousEmail: email,
+      anonymousPassword: password,
+      isAnonymous: true
+    };
+
+    deletePostMutation.mutate(
+      { postId: id, requestData },
+      {
+        onSuccess: () => {
+          setShowAuthModal(false);
+          setAuthForm({ email: '', password: '', action: '' });
+        },
+        onError: (error) => {
+          if (error.message.includes('403')) {
+            alert('이메일 또는 비밀번호가 일치하지 않습니다.');
+          }
+        }
+      }
+    );
   };
 
   const canEditPost = () => {
     if (!post) return false;
 
+    // 익명 게시글은 항상 수정/삭제 버튼을 표시 (인증 모달로 확인)
     if (post.is_anonymous) {
-      return true; // 익명 글은 인증 모달을 통해 확인
+      return true;
     } else {
+      // 일반 게시글은 로그인한 사용자가 작성자인 경우만
       return currentUser.is_logged_in && currentUser.author_name === post.author_name;
     }
   };
@@ -233,22 +550,12 @@ function PostDetail() {
     }
   };
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = async () => {
     if (post.is_anonymous) {
       setAuthForm({ email: '', password: '', action: 'delete' });
       setShowAuthModal(true);
     } else if (currentUser.is_logged_in && currentUser.author_name === post.author_name) {
-      if (window.confirm('정말로 삭제하시겠습니까?')) {
-        // TODO: 실제 삭제 API 호출 - DELETE /api/posts/{id}
-        // try {
-        //   await fetch(`/api/posts/${id}`, { method: 'DELETE' });
-        //   navigate('/community');
-        // } catch (error) {
-        //   console.error('Failed to delete post:', error);
-        // }
-        alert('게시글이 삭제되었습니다.');
-        navigate('/community');
-      }
+      handleDeletePost();
     } else {
       alert('작성자만 삭제할 수 있습니다.');
     }
@@ -257,43 +564,32 @@ function PostDetail() {
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
 
-    // TODO: 실제 익명 인증 API 호출 - POST /api/auth
-    // try {
-    //   const response = await fetch('/api/auth', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({
-    //       post_id: post.post_id,
-    //       email: authForm.email,
-    //       password: authForm.password
-    //     })
-    //   });
-    //   const result = await response.json();
-    //   if (!result.success) {
-    //     alert('이메일 또는 비밀번호가 일치하지 않습니다.');
-    //     return;
-    //   }
-    // } catch (error) {
-    //   console.error('Failed to authenticate:', error);
-    //   return;
-    // }
+    if (authForm.action === 'edit') {
+      // 수정의 경우 인증 확인 후 PostEdit 페이지로 이동
+      const authData = {
+        anonymousEmail: authForm.email,
+        anonymousPassword: authForm.password
+      };
 
-    // MOCK 인증 확인
-    if (authForm.email === post.anonymous_email && authForm.password === post.anonymous_pwd) {
-      if (authForm.action === 'edit') {
-        navigate(`/post/edit/${post.post_id}`);
-        alert('인증 완료! 수정 페이지로 이동합니다.');
-      } else if (authForm.action === 'delete') {
-        if (window.confirm('정말로 삭제하시겠습니까?')) {
-          // TODO: 실제 삭제 API 호출 - DELETE /api/posts/{id}
-          alert('게시글이 삭제되었습니다.');
-          navigate('/community');
+      verifyAnonymousPostMutation.mutate(
+        { postId: post.post_id, authData },
+        {
+          onSuccess: () => {
+            // 인증 성공 시 수정 페이지로 이동 (인증 정보와 함께)
+            navigate(`/post/edit/${post.post_id}`, {
+              state: {
+                anonymousEmail: authForm.email,
+                anonymousPassword: authForm.password
+              }
+            });
+            setShowAuthModal(false);
+            setAuthForm({ email: '', password: '', action: '' });
+          }
         }
-      }
-      setShowAuthModal(false);
-      setAuthForm({ email: '', password: '', action: '' });
-    } else {
-      alert('이메일 또는 비밀번호가 일치하지 않습니다.');
+      );
+    } else if (authForm.action === 'delete') {
+      // 삭제의 경우 바로 실행
+      handleDeletePostWithAuth(authForm.email, authForm.password);
     }
   };
 
@@ -305,9 +601,6 @@ function PostDetail() {
     }));
   };
 
-  const handleLoadingComplete = () => {
-    setLoading(false);
-  };
 
   if (loading) {
     return (
@@ -378,15 +671,24 @@ function PostDetail() {
           <span className="text-primary font-medium">게시글 상세</span>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          {/* 게시글 내용 */}
-          <div className="bg-white rounded-lg shadow-sm mb-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* 메인 콘텐츠 영역 */}
+          <div className="lg:col-span-2">
+            {/* 게시글 내용 */}
+            <div className="bg-white rounded-lg shadow-sm mb-8">
             {/* 게시글 헤더 */}
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center space-x-2 mb-4">
-                <span className="bg-secondary text-white text-sm px-3 py-1 rounded-full">
-                  {post.category}
-                </span>
+                {(() => {
+                  const categoryStyle = getCategoryStyle(post.category);
+                  return (
+                    <span className={`${categoryStyle.bgColor} ${categoryStyle.textColor} text-sm px-3 py-1 rounded-full flex items-center space-x-2 border ${categoryStyle.borderColor}`}>
+                      <i className={`${categoryStyle.icon} ${categoryStyle.iconColor}`}></i>
+                      <span>{post.category}</span>
+                    </span>
+                  );
+                })()}
                 <span className="text-sm text-gray-500">{post.created_at}</span>
               </div>
 
@@ -400,7 +702,29 @@ function PostDetail() {
                 </div>
               )}
 
-              <h1 className="text-3xl font-bold text-gray-800 mb-4">{post.title}</h1>
+              <div className="flex items-start justify-between mb-4">
+                <h1 className="text-3xl font-bold text-gray-800 flex-1">{post.title}</h1>
+
+                {/* 수정/삭제 버튼 */}
+                {canEditPost() && (
+                  <div className="flex space-x-2 ml-4">
+                    <button
+                      onClick={handleEditClick}
+                      className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 border border-blue-300 rounded hover:bg-blue-50 transition-colors"
+                    >
+                      <i className="fas fa-edit mr-1"></i>
+                      수정
+                    </button>
+                    <button
+                      onClick={handleDeleteClick}
+                      className="px-3 py-1 text-sm text-red-600 hover:text-red-800 border border-red-300 rounded hover:bg-red-50 transition-colors"
+                    >
+                      <i className="fas fa-trash mr-1"></i>
+                      삭제
+                    </button>
+                  </div>
+                )}
+              </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
@@ -419,7 +743,7 @@ function PostDetail() {
                 </div>
 
                 <button
-                  onClick={handleLike}
+                  onClick={() => likeMutate()}
                   className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors"
                 >
                   <i className="fas fa-heart"></i>
@@ -440,54 +764,64 @@ function PostDetail() {
               {post.attachments && post.attachments.length > 0 && (
                 <div className="mt-8 pt-8 border-t border-gray-200">
                   <h3 className="text-lg font-semibold text-gray-800 mb-4">첨부파일</h3>
-                  <div className="space-y-2">
-                    {post.attachments.map((file, index) => (
-                      <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">
-                        <i className="fas fa-file text-gray-400 mr-3"></i>
-                        <span className="text-sm text-gray-700 flex-1">{file.original_filename}</span>
-                        <span className="text-xs text-gray-500 mr-3">{(file.file_size / 1024).toFixed(1)}KB</span>
-                        <button className="text-primary hover:text-blue-800 text-sm">
-                          <i className="fas fa-download mr-1"></i>
-                          다운로드
-                        </button>
+
+                  {(() => {
+                    // 이미지와 일반 파일 분리
+                    const { images, files } = categorizeAttachments(post.attachments);
+
+                    return (
+                      <div className="space-y-4">
+                        {/* 이미지들 - 가로로 나열 */}
+                        {images.length > 0 && (
+                          <div className="flex flex-wrap gap-3">
+                            {images.map((file) => (
+                              <div key={file.index} className="relative group">
+                                <img
+                                  src={`http://localhost:8080${file.fileUrl}`}
+                                  alt={file.originalFilename}
+                                  className="w-24 h-24 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                                  onClick={() => window.open(`http://localhost:8080${file.fileUrl}`, '_blank')}
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                    console.error('이미지 로드 실패:', file.fileUrl);
+                                  }}
+                                />
+                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs px-1 py-0.5 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                  {file.fileSize}KB
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* 일반 파일들 - 세로로 길게 */}
+                        {files.map((file) => (
+                          <div
+                            key={file.index}
+                            className="bg-gray-50 rounded-lg p-4 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => window.open(`http://localhost:8080${file.fileUrl}`, '_blank')}
+                          >
+                            <div className="flex items-center space-x-3">
+                              <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i className="fas fa-file text-gray-400 text-lg"></i>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-gray-700 font-medium">{file.originalFilename}</p>
+                                <p className="text-xs text-gray-500">{file.fileSize}KB</p>
+                              </div>
+                              <div className="flex-shrink-0">
+                                <i className="fas fa-external-link-alt text-gray-400 text-sm"></i>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })()}
                 </div>
               )}
             </div>
 
-            {/* 게시글 액션 */}
-            <div className="p-6 border-t border-gray-200 bg-gray-50">
-              <div className="flex justify-between items-center">
-                <Link
-                  to="/community"
-                  className="text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  <i className="fas fa-list mr-2"></i>
-                  목록으로
-                </Link>
-
-                {canEditPost() && (
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={handleEditClick}
-                      className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-                    >
-                      <i className="fas fa-edit mr-1"></i>
-                      수정
-                    </button>
-                    <button
-                      onClick={handleDeleteClick}
-                      className="px-4 py-2 text-red-600 hover:text-red-800 transition-colors"
-                    >
-                      <i className="fas fa-trash mr-1"></i>
-                      삭제
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
 
           {/* 댓글 섹션 */}
@@ -515,8 +849,55 @@ function PostDetail() {
                         <p className="text-sm text-gray-500">{comment.created_at}</p>
                       </div>
                     </div>
+
+                    {/* 댓글 수정/삭제 버튼 */}
+                    {(comment.is_anonymous || (currentUser.is_logged_in && currentUser.author_name === comment.author_name)) && (
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => comment.is_anonymous ? handleAnonymousCommentEdit(comment) : startEditComment(comment)}
+                          className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 border border-blue-300 rounded hover:bg-blue-50 transition-colors"
+                        >
+                          <i className="fas fa-edit mr-1"></i>
+                          수정
+                        </button>
+                        <button
+                          onClick={() => comment.is_anonymous ? handleAnonymousCommentDelete(comment.comment_id) : handleDeleteComment(comment.comment_id)}
+                          className="px-2 py-1 text-xs text-red-600 hover:text-red-800 border border-red-300 rounded hover:bg-red-50 transition-colors"
+                        >
+                          <i className="fas fa-trash mr-1"></i>
+                          삭제
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-gray-700 ml-13">{comment.content}</p>
+
+                  {/* 댓글 내용 또는 수정 입력창 */}
+                  {editingComment === comment.comment_id ? (
+                    <div className="ml-13">
+                      <textarea
+                        value={editCommentContent}
+                        onChange={(e) => setEditCommentContent(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                        rows="3"
+                      />
+                      <div className="flex justify-end space-x-2 mt-2">
+                        <button
+                          onClick={cancelEditComment}
+                          className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                        >
+                          취소
+                        </button>
+                        <button
+                          onClick={() => handleEditComment(comment.comment_id)}
+                          className="px-3 py-1 text-sm bg-primary text-white rounded hover:bg-blue-800 transition-colors"
+                        >
+                          저장
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-gray-700 ml-13">{comment.content}</p>
+                  )}
                 </div>
               ))}
             </div>
@@ -591,6 +972,64 @@ function PostDetail() {
               </form>
             </div>
           </div>
+            </div>
+
+            {/* 사이드바 */}
+            <div className="lg:col-span-1">
+              <div className="space-y-6 sticky top-8">
+                {/* 인기 게시글 */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                    <i className="fas fa-fire text-red-500 mr-2"></i>
+                    인기 게시글
+                  </h3>
+                  <div className="space-y-3">
+                    {popularPosts.length > 0 ? (
+                      popularPosts.slice(0, 3).map(post => (
+                        <div key={post.post_id} className="border-b border-gray-100 pb-3 last:border-b-0">
+                          <Link to={`/post/${post.post_id}`}>
+                            <h4 className="text-sm font-semibold text-gray-800 mb-1 line-clamp-1 flex items-center hover:text-primary transition-colors">
+                              {post.title}
+                              {post.has_attachments && (
+                                <i className="fas fa-paperclip ml-1 text-red-400 text-xs" title="첨부파일 있음"></i>
+                              )}
+                            </h4>
+                          </Link>
+                          <div className="flex items-center text-xs text-gray-500">
+                            <span>{post.is_anonymous ? '익명' : post.author_name}</span>
+                            <span className="mx-2">•</span>
+                            <span>{post.views}회</span>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-gray-500 text-sm text-center py-4">
+                        인기 게시글을 불러오는 중...
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 커뮤니티 바로가기 */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                    <i className="fas fa-users text-green-500 mr-2"></i>
+                    커뮤니티
+                  </h3>
+                  <div className="space-y-3">
+                    <Link to="/community" className="block p-3 bg-primary text-white rounded-lg hover:bg-blue-800 transition-colors text-center">
+                      <i className="fas fa-list mr-2"></i>
+                      전체 게시글 보기
+                    </Link>
+                    <Link to="/community-form" className="block p-3 bg-secondary text-white rounded-lg hover:bg-orange-600 transition-colors text-center">
+                      <i className="fas fa-pen mr-2"></i>
+                      새 글 작성하기
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -604,14 +1043,6 @@ function PostDetail() {
             <p className="text-gray-600 mb-4">
               익명 게시글을 {authForm.action === 'edit' ? '수정' : '삭제'}하려면 작성 시 입력한 이메일과 비밀번호를 입력해주세요.
             </p>
-
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
-              <p className="text-sm text-yellow-800">
-                <strong>테스트용 계정:</strong><br/>
-                이메일: test@example.com<br/>
-                비밀번호: password123
-              </p>
-            </div>
 
             <form onSubmit={handleAuthSubmit} className="space-y-4">
               <div>
@@ -664,6 +1095,81 @@ function PostDetail() {
                   }`}
                 >
                   {authForm.action === 'edit' ? '수정하기' : '삭제하기'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 익명 댓글 인증 모달 */}
+      {showCommentAuthModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              댓글 {commentAuthForm.action === 'edit' ? '수정' : '삭제'} 인증
+            </h3>
+            <p className="text-gray-600 mb-4">
+              익명 댓글을 {commentAuthForm.action === 'edit' ? '수정' : '삭제'}하려면 작성 시 입력한 이메일과 비밀번호를 입력해주세요.
+            </p>
+
+            <form onSubmit={handleCommentAuthSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  이메일
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={commentAuthForm.email}
+                  onChange={handleCommentAuthInputChange}
+                  placeholder="작성 시 입력한 이메일"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  비밀번호
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={commentAuthForm.password}
+                  onChange={handleCommentAuthInputChange}
+                  placeholder="작성 시 입력한 비밀번호"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
+                />
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCommentAuthModal(false);
+                    setCommentAuthForm({
+                      email: '',
+                      password: '',
+                      action: '',
+                      commentId: null,
+                      comment: null
+                    });
+                  }}
+                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  className={`px-4 py-2 text-white rounded-lg transition-colors ${
+                    commentAuthForm.action === 'delete'
+                      ? 'bg-red-600 hover:bg-red-700'
+                      : 'bg-primary hover:bg-blue-800'
+                  }`}
+                >
+                  {commentAuthForm.action === 'edit' ? '확인' : '삭제하기'}
                 </button>
               </div>
             </form>

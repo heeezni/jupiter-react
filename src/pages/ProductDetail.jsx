@@ -5,7 +5,7 @@ import AlcoholPreloader from '../components/AlcoholPreloader';
 
 function ProductDetail() {
   const { id } = useParams();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // TODO: 하드코딩된 상품 데이터를 실제 API 또는 데이터베이스에서 가져오도록 수정 필요
   // TODO: 크롤링 시스템과 연동하여 실시간 가격 정보 업데이트 구현 필요
@@ -177,7 +177,7 @@ function ProductDetail() {
 
   useEffect(() => {
     setIsLoading(true);
-  }, [id]);
+  }, []);
 
   const handleLoadingComplete = () => {
     setIsLoading(false);
@@ -306,7 +306,7 @@ function ProductDetail() {
             </div>
             <div className="flex items-start space-x-3">
               <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-star text-blue-600"></i>
+                <i className="fas fa-heart text-blue-600"></i>
               </div>
               <div>
                 <h4 className="font-semibold mb-1">즐겨찾기 추가</h4>

@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { getKoreanCategory, getEnglishCategory, KOREAN_CATEGORIES } from '../utils/categoryUtils';
+import { useFileUpload } from '../hooks/useFileUpload';
+import { categorizeAttachments } from '../utils/fileUtils';
+import { fetchPopularPosts } from '../services/api';
 
 function PostEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation(); // 현재 URL 정보를 가져오는 Hook
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     category: '',
@@ -13,8 +19,11 @@ function PostEdit() {
     attachments: []
   });
   const [originalPost, setOriginalPost] = useState(null);
-  const [previewImages, setPreviewImages] = useState([]);
   const [currentIconIndex, setCurrentIconIndex] = useState(0);
+  const [deletedAttachments, setDeletedAttachments] = useState([]); // 삭제된 첨부파일 ID 추적
+
+  // 파일 업로드 훅 사용
+  const { previewImages, setPreviewImages, handleFileUpload, removeFile } = useFileUpload(formData, setFormData);
 
   const alcoholIcons = [
     '🍷', // 와인잔
@@ -27,6 +36,15 @@ function PostEdit() {
     '🍸'  // 칵테일
   ];
 
+  // 인기 게시글 조회 (전체 카테고리, 첫 번째 페이지, 조회수 순 정렬)
+  const { data: popularPostsData } = useQuery({
+    queryKey: ['popularPosts', '전체', 1],
+    queryFn: fetchPopularPosts,
+    staleTime: 5 * 60 * 1000, // 5분간 fresh 상태 유지
+  });
+
+  const popularPosts = popularPostsData?.posts || [];
+
   // TODO: 실제 로그인 상태를 가져오는 hook 또는 context 사용
   const currentUser = {
     user_id: 1,
@@ -34,13 +52,7 @@ function PostEdit() {
     is_logged_in: false
   }; // MOCK DATA
 
-  const categories = [
-    '자유게시판',
-    '가격정보',
-    '술리뷰',
-    '질문답변',
-    '이벤트'
-  ];
+  const categories = KOREAN_CATEGORIES;
 
   // 아이콘 회전 애니메이션
   useEffect(() => {
@@ -54,42 +66,51 @@ function PostEdit() {
   }, [loading, alcoholIcons.length]);
 
   useEffect(() => {
-    // TODO: 실제 API 호출로 바꿀 것 - GET /api/posts/{id}
-    const mockPost = {
-      post_id: parseInt(id),
-      title: '조니워커 블루라벨 할인 정보 공유',
-      content: `쿠팡에서 조니워커 블루라벨이 20% 할인 중이에요!
+    const fetchPost = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`http://localhost:8080/community/api/posts/${id}`);
+        const result = await response.json();
 
-평소에 너무 비싸서 구매를 망설였는데, 이번에 할인가로 구매했습니다.
-정말 부드럽고 깊은 맛이 인상적이네요.
+        if (!response.ok) {
+          console.error('Failed to fetch post:', response.status);
+          alert('게시글을 불러오는데 실패했습니다.');
+          navigate('/community');
+          return;
+        }
 
-할인 기간이 얼마 남지 않았으니 관심 있으신 분들은 서둘러주세요!`,
-      author_name: '익명',
-      category: '가격정보',
-      tags: '#위스키 #할인 #쿠팡',
-      is_anonymous: false,
-      attachments: []
+        const postData = result.data;
+
+        // 백엔드 데이터를 프론트엔드 형식으로 변환
+        const transformedPost = {
+          post_id: postData.postId,
+          title: postData.title,
+          content: postData.content,
+          author_name: postData.authorName,
+          category: postData.category,
+          tags: postData.tags,
+          is_anonymous: postData.isAnonymous,
+          attachments: postData.attachments || []
+        };
+
+        setOriginalPost(transformedPost);
+        setFormData({
+          category: getKoreanCategory(transformedPost.category),
+          title: transformedPost.title,
+          content: transformedPost.content,
+          tags: transformedPost.tags,
+          attachments: []
+        });
+      } catch (error) {
+        console.error('Failed to fetch post:', error);
+        alert('게시글을 불러오는데 실패했습니다.');
+        navigate('/community');
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // TODO: 권한 확인 - 작성자인지 체크
-    // if (!currentUser.is_logged_in ||
-    //     (!mockPost.is_anonymous && currentUser.author_name !== mockPost.author_name)) {
-    //   alert('수정 권한이 없습니다.');
-    //   navigate('/community');
-    //   return;
-    // }
-
-    setTimeout(() => {
-      setOriginalPost(mockPost);
-      setFormData({
-        category: mockPost.category,
-        title: mockPost.title,
-        content: mockPost.content,
-        tags: mockPost.tags,
-        attachments: []
-      });
-      setLoading(false);
-    }, 500);
+    fetchPost().catch(console.error);
   }, [id, navigate]);
 
   const handleInputChange = (e) => {
@@ -100,68 +121,99 @@ function PostEdit() {
     }));
   };
 
-  const handleFileUpload = (e) => {
-    // TODO: 파일 사이즈 제한, 파일 타입 검증 추가
-    // TODO: 이미지 미리보기 최적화 (원본 크기 유지)
-    const files = Array.from(e.target.files);
-    if (files.length + previewImages.length > 5) {
-      alert('최대 5개의 파일까지 업로드 가능합니다.');
-      return;
-    }
-
-    const newPreviews = files.map(file => ({
-      file,
-      url: file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
-      id: Date.now() + Math.random(),
-      name: file.name,
-      size: file.size,
-      type: file.type
-    }));
-
-    setPreviewImages(prev => [...prev, ...newPreviews]);
-    setFormData(prev => ({
-      ...prev,
-      attachments: [...prev.attachments, ...files]
-    }));
+  // 기존 첨부파일 삭제
+  const handleDeleteExistingFile = (attachmentId) => {
+    setDeletedAttachments(prev => [...prev, attachmentId]);
   };
 
-  const removeFile = (id) => {
-    setPreviewImages(prev => prev.filter(file => file.id !== id));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // TODO: 실제 API 호출로 바꿀 것 - PUT /api/posts/{id}
-    // try {
-    //   const response = await fetch(`/api/posts/${id}`, {
-    //     method: 'PUT',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'Authorization': `Bearer ${token}`
-    //     },
-    //     body: JSON.stringify({
-    //       category: formData.category,
-    //       title: formData.title,
-    //       content: formData.content,
-    //       tags: formData.tags
-    //       // 작성자 정보는 수정하지 않음
-    //     })
-    //   });
-    //
-    //   if (response.ok) {
-    //     navigate(`/post/${id}`);
-    //   } else {
-    //     alert('게시글 수정에 실패했습니다.');
-    //   }
-    // } catch (error) {
-    //   console.error('Failed to update post:', error);
-    //   alert('게시글 수정 중 오류가 발생했습니다.');
-    // }
+    try {
+      // 카테고리 변환 (한글 -> 영문)
 
-    console.log('수정된 게시글 데이터:', formData);
-    alert('게시글이 성공적으로 수정되었습니다!');
-    navigate(`/post/${id}`);
+      const requestData = {
+        title: formData.title,
+        content: formData.content,
+        category: getEnglishCategory(formData.category),
+        tags: formData.tags,
+        // 작성자 정보는 원본 게시글에서 가져옴
+        authorName: originalPost.author_name,
+        isAnonymous: originalPost.is_anonymous
+      };
+
+      // 익명 게시글인 경우 PostDetail에서 전달받은 인증 정보 추가
+      // location.state는 URL에 노출되지 않고, 브라우저 히스토리 객체에만 저장
+      if (originalPost.is_anonymous && location.state) {
+        requestData.anonymousEmail = location.state.anonymousEmail;
+        requestData.anonymousPassword = location.state.anonymousPassword;
+      }
+
+      const response = await fetch(`http://localhost:8080/community/api/posts/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+      });
+
+      if (!response.ok) {
+        console.error('Failed to update post:', response.status);
+        alert('게시글 수정 중 오류가 발생했습니다.');
+        return;
+      }
+
+      // 삭제된 파일들 처리 (개별 파일별로 삭제)
+      if (deletedAttachments.length > 0) {
+        try {
+          const deletePromises = deletedAttachments.map(attachmentId =>
+            fetch(`http://localhost:8080/community/api/posts/attachments/${attachmentId}`, {
+              method: 'DELETE'
+            })
+          );
+
+          const deleteResults = await Promise.all(deletePromises);
+
+          // 실패한 삭제가 있는지 확인
+          const failedDeletes = deleteResults.filter(response => !response.ok);
+          if (failedDeletes.length > 0) {
+            console.error('Some files failed to delete:', failedDeletes.length);
+          }
+        } catch (error) {
+          console.error('Failed to delete files:', error);
+        }
+      }
+
+      // 새 파일들 업로드
+      if (formData.attachments && formData.attachments.length > 0) {
+        try {
+          const uploadFormData = new FormData();
+          formData.attachments.forEach(file => {
+            uploadFormData.append('files', file);
+          });
+
+          const uploadResponse = await fetch(`http://localhost:8080/community/api/posts/${id}/attachments`, {
+            method: 'POST',
+            body: uploadFormData
+          });
+
+          if (!uploadResponse.ok) {
+            console.error('Failed to upload new files:', uploadResponse.status);
+            alert('게시글은 수정되었지만 새 파일 업로드에 실패했습니다.');
+          }
+        } catch (error) {
+          console.error('Failed to upload new files:', error);
+          alert('게시글은 수정되었지만 새 파일 업로드에 실패했습니다.');
+        }
+      }
+
+      alert('게시글이 성공적으로 수정되었습니다!');
+      navigate(`/post/${id}`);
+    } catch (error) {
+      console.error('Failed to update post:', error);
+      alert('게시글 수정 중 오류가 발생했습니다.');
+    }
   };
 
   if (loading) {
@@ -230,8 +282,11 @@ function PostEdit() {
           <span className="text-primary font-medium">게시글 수정</span>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* 메인 콘텐츠 영역 */}
+            <div className="lg:col-span-2">
+              <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-8">
             {/* 작성자 정보 표시 (수정 불가) */}
             <div className="mb-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
               <h3 className="text-lg font-semibold text-blue-800 mb-2 flex items-center">
@@ -333,6 +388,70 @@ function PostEdit() {
                 파일 첨부 (선택)
               </h2>
 
+              {/* 기존 첨부파일 */}
+              {originalPost?.attachments && originalPost.attachments.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-4">기존 첨부파일</h3>
+                  {(() => {
+                    // 이미지와 일반 파일 분리 (삭제된 파일 제외)
+                    const { images, files } = categorizeAttachments(originalPost.attachments, deletedAttachments);
+
+                    return (
+                      <div className="space-y-4">
+                        {/* 기존 이미지들 - 가로로 나열 */}
+                        {images.length > 0 && (
+                          <div className="flex flex-wrap gap-3">
+                            {images.map((file) => (
+                              <div key={file.index} className="relative group">
+                                <img
+                                  src={`http://localhost:8080${file.fileUrl}`}
+                                  alt={file.originalFilename}
+                                  className="w-24 h-24 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                                  onClick={() => window.open(`http://localhost:8080${file.fileUrl}`, '_blank')}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteExistingFile(file.postAttachmentId)}
+                                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                                  title="파일 삭제"
+                                >
+                                  ×
+                                </button>
+                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs px-1 py-0.5 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                  {file.fileSize}KB
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* 기존 일반 파일들 - 세로로 길게 */}
+                        {files.map((file) => (
+                          <div
+                            key={file.index}
+                            className="bg-blue-50 rounded-lg p-3 cursor-pointer hover:bg-blue-100 transition-colors"
+                            onClick={() => window.open(`http://localhost:8080${file.fileUrl}`, '_blank')}
+                          >
+                            <div className="flex items-center space-x-3">
+                              <div className="w-10 h-10 bg-blue-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i className="fas fa-file text-blue-600 text-sm"></i>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-blue-800 font-medium truncate">{file.originalFilename}</p>
+                                <p className="text-xs text-blue-600">{file.fileSize}KB</p>
+                              </div>
+                              <div className="flex-shrink-0">
+                                <i className="fas fa-external-link-alt text-blue-500 text-xs"></i>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                 <input
                   type="file"
@@ -397,6 +516,90 @@ function PostEdit() {
               </button>
             </div>
           </form>
+            </div>
+
+            {/* 사이드바 */}
+            <div className="lg:col-span-1">
+              <div className="space-y-6 sticky top-8">
+                {/* 인기 게시글 */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                    <i className="fas fa-fire text-red-500 mr-2"></i>
+                    인기 게시글
+                  </h3>
+                  <div className="space-y-3">
+                    {popularPosts.length > 0 ? (
+                      popularPosts.slice(0, 3).map(post => (
+                        <div key={post.post_id} className="border-b border-gray-100 pb-3 last:border-b-0">
+                          <Link to={`/post/${post.post_id}`}>
+                            <h4 className="text-sm font-semibold text-gray-800 mb-1 line-clamp-1 flex items-center hover:text-primary transition-colors">
+                              {post.title}
+                              {post.has_attachments && (
+                                <i className="fas fa-paperclip ml-1 text-red-400 text-xs" title="첨부파일 있음"></i>
+                              )}
+                            </h4>
+                          </Link>
+                          <div className="flex items-center text-xs text-gray-500">
+                            <span>{post.is_anonymous ? '익명' : post.author_name}</span>
+                            <span className="mx-2">•</span>
+                            <span>{post.views}회</span>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-gray-500 text-sm text-center py-4">
+                        인기 게시글을 불러오는 중...
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 수정 도움말 */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                    <i className="fas fa-edit text-blue-500 mr-2"></i>
+                    수정 도움말
+                  </h3>
+                  <div className="space-y-3 text-sm text-gray-600">
+                    <div className="flex items-start space-x-2">
+                      <i className="fas fa-info-circle text-blue-500 mt-1 text-xs"></i>
+                      <span>제목과 내용을 자유롭게 수정할 수 있습니다</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <i className="fas fa-info-circle text-blue-500 mt-1 text-xs"></i>
+                      <span>카테고리와 태그도 변경 가능합니다</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <i className="fas fa-paperclip text-orange-500 mt-1 text-xs"></i>
+                      <span>새 파일 추가 시 기존 파일이 교체됩니다</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <i className="fas fa-trash text-red-500 mt-1 text-xs"></i>
+                      <span>개별 첨부파일 삭제는 X 버튼을 클릭하세요</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 커뮤니티 바로가기 */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                    <i className="fas fa-users text-green-500 mr-2"></i>
+                    커뮤니티
+                  </h3>
+                  <div className="space-y-3">
+                    <Link to="/community" className="block p-3 bg-primary text-white rounded-lg hover:bg-blue-800 transition-colors text-center">
+                      <i className="fas fa-list mr-2"></i>
+                      전체 게시글 보기
+                    </Link>
+                    <Link to={`/post/${id}`} className="block p-3 bg-secondary text-white rounded-lg hover:bg-orange-600 transition-colors text-center">
+                      <i className="fas fa-eye mr-2"></i>
+                      수정 취소하고 보기
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
